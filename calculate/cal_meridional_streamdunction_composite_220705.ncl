@@ -5,9 +5,9 @@ begin
     f0  =  addfile("/home/sun/data/composite3.nc","r")
     f1  =  addfile("/home/sun/qomo-data/composite_PS.nc","r")
 
-    ps    =  f1->PS
-    u     =  f0->uwind
-    v     =  f0->vwind
+    ps    =  f1->PS(:,{90:100},:)
+    u     =  f0->uwind(:,{90:100},:)
+    v     =  f0->vwind(:,{90:100},:)
 
     lat   =  f0->lat
     lon   =  f0->lon
