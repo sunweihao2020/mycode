@@ -20,7 +20,7 @@ from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 
 path0  =  "/home/sun/qomo-data/"
 
-file1  =  xr.open_dataset('/home/sun/data/composite3.nc').sel(lon=slice(90,100),level=slice(1000,200))
+file1  =  xr.open_dataset('/home/sun/data/composite3.nc').sel(lon=slice(90,100),level=[925,850,700])
 file2  =  xr.open_dataset(path0+"composite_OISST.nc").sel(lon=slice(90,100))
 
 avg_u   =  np.nanmean(file1.uwind,axis=3)
@@ -50,7 +50,8 @@ def meridional_sst():
     fig1  =  plt.figure(figsize=(30,26))
     spec1 =  fig1.add_gridspec(nrows=3,ncols=3)
 
-    j = 0 ; start = 21
+    j = 0 ; #start = 30
+    start = 21
     for col in range(3):
         for row in range(3):
             ax  =  fig1.add_subplot(spec1[row,col])
@@ -80,13 +81,14 @@ def meridional_sst():
             # second axis
             ax2  =  ax.twinx()
 
-            ax2.plot(file1.lat.data,avg_u[start-30,0])
-            ax2.plot(file1.lat.data, avg_u[start - 30, 1])
-            ax2.plot(file1.lat.data, avg_u[start - 30, 2])
+            ax2.plot(file1.lat.data,avg_u[start,0],linewidth=2.5,label="925hpa")
+            ax2.plot(file1.lat.data, avg_u[start, 1],linewidth=2.5,label="850hpa")
+            ax2.plot(file1.lat.data, avg_u[start, 2],linewidth=2.5,label="700hpa")
+
             start += 1
 
 
-    plt.savefig('/home/sun/paint/meridional_tem_gradient_circulation/meridional_sst.pdf', dpi=400)
+    plt.savefig('/home/sun/paint/meridional_tem_gradient_circulation/meridional_sst_-9to-1.pdf', dpi=400)
     plt.show()
     #plt.plot(file2.lat.data,avg_sst[15])
     #plt.xlim([-10,30])
@@ -133,7 +135,8 @@ def meridional_section_uwind():
     plt.show()
 
 def main():
-    meridional_section_uwind()
+    #meridional_section_uwind()
+    meridional_sst()
 
 if __name__ == "__main__":
     main()

@@ -5,11 +5,7 @@
     <option name="openedFilesInfos">
       <list>
         <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/README.md" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
+          <option name="caretOffset" value="2739" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/paint/paint_meridional_pre_section_zonal_wind_sst.py" />
         </OpenedFileInfo>
       </list>
