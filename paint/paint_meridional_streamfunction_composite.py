@@ -11,14 +11,13 @@ sys.path.append("/home/sun/mycode/module/")
 sys.path.append("/home/sun/mycode_git/paint/")
 from module_sun import *
 import sys
-from paint_meridional_pre_section_zonal_wind_sst import generate_xlabel
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
 
 
 path0  =  "/home/sun/data/"
 
-file0  =  xr.open_dataset(path0+'zonal_meridional_streamfunction_90to100_2.nc') #The dimension is (61,31,361)
+file0  =  xr.open_dataset(path0+'zonal_meridional_streamfunction_90to100_2.nc').sel(lev=slice(1000,100)) #The dimension is (61,31,361)
 print(file0)
 
 viridis = cm.get_cmap('coolwarm', 22)
@@ -26,6 +25,18 @@ newcolors = viridis(np.linspace(0, 1, 22))
 newcmp = ListedColormap(newcolors)
 newcmp.set_under('blue')
 newcmp.set_over('brown')
+
+def generate_xlabel(array):
+    '''This code generate labels for x axis'''
+    labels = []
+    for i in array:
+        if i<0:
+            labels.append(str(abs(i))+"S")
+        elif i>0:
+            labels.append(str(i)+"N")
+        else:
+            labels.append("EQ")
+    return labels
 
 def paint_meridional_stream():
     # set figure
@@ -45,4 +56,36 @@ def paint_meridional_stream():
             ax.tick_params(axis='both', labelsize=22.5)
 
             # plot streamfunction
-            im = ax.contourf(file0.lat.data, file0.level.data,[start],np.linspace(-15,15,21),cmap=newcmp,extend='both')
+            im = ax.contourf(file0.lat.data, file0.lev.data,file0.MPSI[start],21,cmap=newcmp,extend='both')
+
+            # set range
+            ax.set_xlim((-10,30))
+
+            # set axis label
+            ax.set_xlabel("Latitude", fontsize=18)
+            ax.set_ylabel("MPSI (90-100E average)", fontsize=18)
+
+            # add date
+            add_text(ax=ax, string="D" + str(start - 30), location=(0.05, 0.91), fontsize=30)
+
+            # invert y axis
+            ax.invert_yaxis()
+
+            # fill nan value
+            plt.gca().set_facecolor("black")
+
+            start += 1
+    
+    fig1.subplots_adjust(top=0.8)
+    cbar_ax = fig1.add_axes([0.2, 0.05, 0.6, 0.03])
+    cb = fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
+    cb.ax.tick_params(labelsize=25)
+
+    plt.savefig('/home/sun/paint/meridional_tem_gradient_circulation/meridional_st_90to100_-9to-1.pdf', dpi=400)
+    plt.show()
+
+def main():
+    paint_meridional_stream()
+
+if __name__ == "__main__":
+    main()
