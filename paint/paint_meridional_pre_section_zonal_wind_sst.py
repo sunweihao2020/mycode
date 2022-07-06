@@ -98,7 +98,7 @@ def meridional_section_uwind():
     fig1 = plt.figure(figsize=(30, 26))
     spec1 = fig1.add_gridspec(nrows=3, ncols=3)
     j = 0;
-    start = 21
+    start = 30
     for col in range(3):
         for row in range(3):
             ax = fig1.add_subplot(spec1[row, col])
@@ -129,7 +129,7 @@ def meridional_section_uwind():
     cb = fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=25)
 
-    plt.savefig('/home/sun/paint/meridional_tem_gradient_circulation/meridional_uwind_90to100.pdf', dpi=400)
+    plt.savefig('/home/sun/paint/meridional_tem_gradient_circulation/meridional_uwind_90to100_0to+8.pdf', dpi=400)
     plt.show()
 
 def main():
