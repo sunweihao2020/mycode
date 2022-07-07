@@ -13,12 +13,15 @@ from module_sun import *
 import sys
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
+from paint_lunwen_version3_0_fig2a_tem_gradient_20220426 import add_text
 
 
 path0  =  "/home/sun/data/"
 
-file0  =  xr.open_dataset(path0+'zonal_meridional_streamfunction_90to100_2.nc').sel(lev=slice(1000,100)) #The dimension is (61,31,361)
-print(file0)
+file0  =  xr.open_dataset(path0+'zonal_meridional_streamfunction_90to100.nc') #The dimension is (61,31,361)
+file1  =  xr.open_dataset(path0+'composite3.nc').sel(level=slice(1000,100))
+file2  =  xr.open_dataset(path0+'zonal_meridional_streamfunction_90to100_2.nc')
+#print(file0)
 
 viridis = cm.get_cmap('coolwarm', 22)
 newcolors = viridis(np.linspace(0, 1, 22))
@@ -38,12 +41,27 @@ def generate_xlabel(array):
             labels.append("EQ")
     return labels
 
+def interp_mpsi():
+    '''The regional meridional stream function does not has 1000hpa, so I need to interp it to 1000'''
+    old_lev   =  file2.lev.data/100
+    new_level =  file1.level.data[::-1]
+    #print(new_level)
+    #print(old_lev)
+    mpsi_new  =  np.zeros((61,len(new_level),361))
+    for dd in range(61):
+        for yy in range(361):
+            mpsi_new[dd,:,yy]  =  np.interp(new_level,old_lev,file0.MPSI.data[dd,:,yy])
+
+    return mpsi_new
+
+
+
 def paint_meridional_stream():
     # set figure
     fig1 = plt.figure(figsize=(32, 26))
     spec1 = fig1.add_gridspec(nrows=3, ncols=3)
     j = 0
-    start = 21
+    start = 40
 
     for col in range(3):
         for row in range(3):
@@ -56,7 +74,8 @@ def paint_meridional_stream():
             ax.tick_params(axis='both', labelsize=22.5)
 
             # plot streamfunction
-            im = ax.contourf(file0.lat.data, file0.lev.data,file0.MPSI[start],21,cmap=newcmp,extend='both')
+            mpsi  =  interp_mpsi()
+            im    = ax.contourf(file1.lat.data, file1.level.data,mpsi[start,::-1,:],21,cmap=newcmp,extend='both')
 
             # set range
             ax.set_xlim((-10,30))
@@ -86,6 +105,7 @@ def paint_meridional_stream():
 
 def main():
     paint_meridional_stream()
+
 
 if __name__ == "__main__":
     main()
