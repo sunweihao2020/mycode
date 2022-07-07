@@ -23,8 +23,8 @@ file1  =  xr.open_dataset(path0+'composite3.nc').sel(level=slice(1000,100))
 file2  =  xr.open_dataset(path0+'zonal_meridional_streamfunction_90to100_2.nc')
 #print(file0)
 
-viridis = cm.get_cmap('coolwarm', 22)
-newcolors = viridis(np.linspace(0, 1, 22))
+viridis = cm.get_cmap('coolwarm', 30)
+newcolors = viridis(np.linspace(0, 1, 30))
 newcmp = ListedColormap(newcolors)
 newcmp.set_under('blue')
 newcmp.set_over('brown')
@@ -61,7 +61,7 @@ def paint_meridional_stream():
     fig1 = plt.figure(figsize=(32, 26))
     spec1 = fig1.add_gridspec(nrows=3, ncols=3)
     j = 0
-    start = 40
+    start = 30
 
     for col in range(3):
         for row in range(3):
@@ -75,7 +75,8 @@ def paint_meridional_stream():
 
             # plot streamfunction
             mpsi  =  interp_mpsi()
-            im    = ax.contourf(file1.lat.data, file1.level.data,mpsi[start,::-1,:],21,cmap=newcmp,extend='both')
+            mpsi  /= 1e11
+            im    = ax.contourf(file1.lat.data, file1.level.data,mpsi[start,::-1,:],np.linspace(-2.8,2.8,29),cmap=newcmp,extend='both')
 
             # set range
             ax.set_xlim((-10,30))
@@ -100,7 +101,7 @@ def paint_meridional_stream():
     cb = fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=25)
 
-    plt.savefig('/home/sun/paint/meridional_tem_gradient_circulation/meridional_st_90to100_-9to-1.pdf', dpi=400)
+    plt.savefig('/home/sun/paint/meridional_tem_gradient_circulation/meridional_st_90to100_0to+8.pdf', dpi=400)
     plt.show()
 
 def main():
