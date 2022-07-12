@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (swh)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (swh)" project-jdk-type="Python SDK" />
   <component name="UnattendedHostPersistenceState">
     <option name="openedFilesInfos">
       <list>
@@ -13,11 +13,11 @@
           <option name="fileUrl" value="file://$PROJECT_DIR$/README.md" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="4886" />
+          <option name="caretOffset" value="154" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/paint/paint_meridional_pre_section_zonal_wind_sst.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
+          <option name="caretOffset" value="3" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/paint/paint_compare_two_MTG_archieve.py" />
         </OpenedFileInfo>
       </list>
