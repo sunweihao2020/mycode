@@ -42,8 +42,8 @@ begin
     j = 0
     do day = 0,60
         print(j)
-        mpsi(day,:,:)  =  zonal_mpsi_Wrap(dv_v(day,1:31:-1,:,432:440), lat, level(1:31:-1), ps(day,:,432:440))  ; 90-95
-        ;mpsi(day,:,:)  =  zonal_mpsi_Wrap(dv_v(day,1:31:-1,:,440:448), lat, level(1:31:-1), ps(day,:,440:448))  ; 95-100
+        ;mpsi(day,:,:)  =  zonal_mpsi_Wrap(dv_v(day,1:31:-1,:,432:440), lat, level(1:31:-1), ps(day,:,432:440))  ; 90-95
+        mpsi(day,:,:)  =  zonal_mpsi_Wrap(dv_v(day,1:31:-1,:,440:448), lat, level(1:31:-1), ps(day,:,440:448))  ; 95-100
         
         j = j+1
     end do
@@ -56,12 +56,12 @@ begin
     ;mpsi&lat = lat
     ;mpsi = mpsi/1E+9
 
-    fout = addfile(path0+"composite_zonal_meridional_streamfunction_90to95.nc","c")
+    fout = addfile(path0+"composite_zonal_meridional_streamfunction_95to100.nc","c")
     filedimdef(fout,"time",-1,True)
     fout->MPSI  =  mpsi
 
     fileatt  =  True
     fileatt@time  =  "2022-7-12"
-    fileatt@description  =  "This file generate zonal meridional streamfunction between 90 to 95, based on composite3.nc"  
+    fileatt@description  =  "This file generate zonal meridional streamfunction between 95 to 100, based on composite3.nc. Generated script from cal_meridional_streamdunction_composite_220705.ncl"  
 
 end
