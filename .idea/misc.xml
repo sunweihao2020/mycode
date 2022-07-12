@@ -5,16 +5,16 @@
     <option name="openedFilesInfos">
       <list>
         <OpenedFileInfo>
-          <option name="caretOffset" value="4886" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/paint/paint_meridional_pre_section_zonal_wind_sst.py" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
           <option name="caretOffset" value="13" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/paint/paint_meridional_streamfunction_composite.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
           <option name="caretOffset" value="0" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/README.md" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="4886" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/paint/paint_meridional_pre_section_zonal_wind_sst.py" />
         </OpenedFileInfo>
       </list>
     </option>
