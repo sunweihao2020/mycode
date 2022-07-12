@@ -2,8 +2,9 @@
 ; This code calculate regional meridional streamfunction between 90 and 100°E
 ; based on composite3.nc
 begin
-    f0  =  addfile("/data5/2019swh/data/composite3.nc","r")
-    f1  =  addfile("/data5/2019swh/data/composite_PS.nc","r")
+    path0  =  "/home/sun/data/"
+    f0  =  addfile(path0+"composite3.nc","r")
+    f1  =  addfile(path0+"composite_PS.nc","r")
 
     ps    =  f1->PS
     u     =  f0->uwind
@@ -41,25 +42,26 @@ begin
     j = 0
     do day = 0,60
         print(j)
-        mpsi(day,:,:)  =  zonal_mpsi(dv_v(day,1:31:-1,:,432:448), lat, level(1:31:-1), ps(day,:,432:448))
+        mpsi(day,:,:)  =  zonal_mpsi_Wrap(dv_v(day,1:31:-1,:,432:440), lat, level(1:31:-1), ps(day,:,432:440))  ; 90-95
+        ;mpsi(day,:,:)  =  zonal_mpsi_Wrap(dv_v(day,1:31:-1,:,440:448), lat, level(1:31:-1), ps(day,:,440:448))  ; 95-100
         
         j = j+1
     end do
 
     ; write to file
-    mpsi!0 = "time"
-    mpsi!1 = "lev"
-    mpsi!2 = "lat"
-    mpsi&lev = p(1:31:-1)
-    mpsi&lat = lat
-    mpsi = mpsi/1E+9
+    ;mpsi!0 = "time"
+    ;mpsi!1 = "lev"
+    ;mpsi!2 = "lat"
+    ;mpsi&lev = level(1:31:-1)
+    ;mpsi&lat = lat
+    ;mpsi = mpsi/1E+9
 
-    fout = addfile("/data5/2019swh/data/zonal_meridional_streamfunction_90to100_2.nc","c")
+    fout = addfile(path0+"composite_zonal_meridional_streamfunction_90to95.nc","c")
     filedimdef(fout,"time",-1,True)
     fout->MPSI  =  mpsi
 
     fileatt  =  True
-    fileatt@time  =  "2022-7-5"
-    fileatt@description  =  "This file generate zonal meridional streamfunction between 90 to 100"  
+    fileatt@time  =  "2022-7-12"
+    fileatt@description  =  "This file generate zonal meridional streamfunction between 90 to 95, based on composite3.nc"  
 
 end
