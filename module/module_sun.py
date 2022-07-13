@@ -18,7 +18,6 @@ import matplotlib.pyplot as plt
 from metpy.units import units
 from cartopy.io.shapereader import Reader
 from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
-import Ngl
 
 '''
 这里记录一些量，省去手打的麻烦
