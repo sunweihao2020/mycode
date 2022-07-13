@@ -35,10 +35,15 @@ def cal_MTG_2(file):
 
     tem_gradient  =  np.gradient(tem_avg1,location)
 
-    return tem_gradient
+    return tem_gradient # we need the location of 5N and 30N
 
 def main():
+    #test
+    f1  =  xr.open_dataset("/home/sun/qomo-data/year_mean/multi/0101.climate.nc")
+    print(f1.lat.data)
 
+if __name__ == "__main__":
+    main()
 
 
 
