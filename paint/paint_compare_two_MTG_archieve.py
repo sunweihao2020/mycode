@@ -37,7 +37,7 @@ def cal_MTG_2(file):
 
     return tem_gradient
 
-def main()
+def main():
 
 
 
