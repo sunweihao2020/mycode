@@ -44,12 +44,26 @@ def cal_monthly_tem():
             # save to array
             avg_tem[i]  +=  avg_dd_t/30  
 
-    print("yes")
+    
     return avg_tem
+
+def paint_meri_tem(tem):
+    '''This code paint meri-vertical temperature
+       In this function, the level use asymmetric level,
+       above 290K the space is 2K 
+    '''
+    import matplotlib.pyplot as plt
+    import sys
+    sys.path.append("/home/sun/mycode/module/paint")
+    import paint_lunwen_version3_0_fig1_bob_onset_seris as plv3
+
+    fig1    =  plt.figure(figsize=(26,17))
+    spec1   =  fig1.add_gridspec(nrows=2,ncols=2)
 
 
 def main():
-    cal_monthly_tem()
+    avg_tem  =  cal_monthly_tem()
+    
 
 if __name__ == "__main__":
     main()
