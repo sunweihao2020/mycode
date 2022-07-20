@@ -18,7 +18,7 @@ from paint_lunwen_version3_0_fig2a_tem_gradient_20220426 import add_text
 from matplotlib import cm
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 
-src_path  =  "/home/sun/qomo-data/year_mean/multi/"
+src_path  =  "/home/sun/data/merra2_climate_vars_multi/"
 
 def cal_MTG_1(file):
     f0  =  xr.open_dataset(src_path+file).sel(lat=[5,15],lev=slice(500,200),lon=slice(90,100))
@@ -55,9 +55,12 @@ def main():
         j += 1
     
     fig, ax = plt.subplots()
-    ax.plot(MTG1,color='red')
-    ax.plot(MTG2,color='blue')
+    ax.plot(np.linspace(1,365,365),MTG1,color='red')
+    ax2     = ax.twinx()
+    ax2.plot(np.linspace(1,365,365),MTG2,color='blue',linestyle='--')
 
+
+    plt.savefig("/home/sun/paint/two_MTG_index_compare_220720/index_compare_MTG.pdf",dpi=400)
     plt.show()
     
 
