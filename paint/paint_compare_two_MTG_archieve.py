@@ -21,12 +21,12 @@ from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 src_path  =  "/home/sun/qomo-data/year_mean/multi/"
 
 def cal_MTG_1(file):
-    f0  =  xr.open_dataset(src_path+file).sel(lat=[5,15],level=slice(500,200),lon=slice(90,100))
+    f0  =  xr.open_dataset(src_path+file).sel(lat=[5,15],lev=slice(500,200),lon=slice(90,100))
 
     return np.average(f0.T.data[0,:,1,:]) - np.average(f0.T.data[0,:,0,:])
 
 def cal_MTG_2(file):
-    f0 = xr.open_dataset(src_path + file).sel(level=slice(500, 200), lon=slice(90, 100))
+    f0 = xr.open_dataset(src_path + file).sel(lev=slice(500, 200), lon=slice(90, 100))
 
     disy, disx, location = cal_xydistance(f0.lat.data, f0.lon.data)
 
@@ -35,12 +35,31 @@ def cal_MTG_2(file):
 
     tem_gradient  =  np.gradient(tem_avg1,location)
 
-    return tem_gradient # we need the location of 5N and 30N
+    return np.average(tem_gradient[190:211]) # we need the location of 5N and 30N, corresponding to 190 211
 
 def main():
-    #test
-    f1  =  xr.open_dataset("/home/sun/qomo-data/year_mean/multi/0101.climate.nc")
-    print(f1.lat.data)
+    # get files list
+    file_name  =  os.listdir(src_path)
+    file_name.sort()
+
+    # generate two arrays of length 365 to save the temperature difference
+    MTG1 = np.zeros((365))
+    MTG2 = MTG1.copy()
+
+    # calculate and save
+    j = 0
+    for name in file_name:
+        MTG1[j] = cal_MTG_1(name)
+        MTG2[j] = cal_MTG_2(name)
+
+        j += 1
+    
+    fig, ax = plt.subplots()
+    ax.plot(MTG1,color='red')
+    ax.plot(MTG2,color='blue')
+
+    plt.show()
+    
 
 if __name__ == "__main__":
     main()
