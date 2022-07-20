@@ -17,6 +17,10 @@ def cal_monthly_tem():
        time period: Jan to May
     '''
     file_list  =  os.listdir(src_path) ; file_list.sort()
+    print(file_list)
 
 def main():
-    cal_m
+    cal_monthly_tem()
+
+if __name__ == "__main__":
+    main()
