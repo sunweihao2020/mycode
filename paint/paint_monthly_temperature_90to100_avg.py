@@ -66,48 +66,58 @@ def paint_meri_tem(tem):
     # reference file
     f0         =  xr.open_dataset(src_path+"0830.climate.nc").sel(lev=lev_slice,lon=lon_slice)
 
-    for pic in range(6):
-        fig, axs  =  plt.subplots(figsize=(13,13))
+    fig1    =  plt.figure(figsize=(26,20))
+    spec1   =  fig1.add_gridspec(nrows=2,ncols=3)
 
-        # contour lines
-        im  =  axs.contour(f0.lat,f0.lev,tem[pic],levels=set_levels(),colors='k',linewidths=2.34)
-        axs.clabel(im,inline_spacing=0, fontsize=15)
+    j = 0
 
-        # deal with topography
-        topofile   =   xr.open_dataset("/home/sun/data/topography/bathymetric.nc").sel(lon=lon_slice)
-        dixing  =  topofile.elevation.data
-        dixing[dixing <= 0]  =  0
-        topo    =  np.average(dixing,axis=1)
+    for row in range(2):
+        for col in range(3):
+
+            axs = fig1.add_subplot(spec1[row,col])
 
 
-        # set label
-        axs.set_xticks(np.linspace(-10,40,6))
-        axs.set_xticklabels(create_label_lat(np.linspace(-10,40,6,dtype=int)))
-        axs.set_yticks(np.linspace(1000,200,5,dtype=int))
-        axs.set_yticklabels(np.linspace(1000,200,5,dtype=int))
-        axs.tick_params(axis='both',labelsize=20.5)
+            # contour lines
+            im  =  axs.contour(f0.lat,f0.lev,tem[j],levels=set_levels(),colors='k',linewidths=2.34)
+            axs.clabel(im,inline_spacing=0, fontsize=15)
 
-        # set axis range
-        axs.set_xlim((-10,40))
-
-        axs.invert_yaxis()
-
-        # set title
-        axs.set_title(month[pic],fontsize=30)
-
-        # add topography graph
-        ax2  =  axs.twinx()
-
-        ax2.set_ylim((0,11.5))
-        ax2.tick_params(axis='both',labelsize=20.5)
-
-        ax2.plot(topofile.lat.data,topo/1000,color='k')
-        ax2.fill_between(topofile.lat.data,0,topo/1000,where=topo>0,color='k')
+            # deal with topography
+            topofile   =   xr.open_dataset("/home/sun/data/topography/bathymetric.nc").sel(lon=lon_slice)
+            dixing  =  topofile.elevation.data
+            dixing[dixing <= 0]  =  0
+            topo    =  np.average(dixing,axis=1)
 
 
-        path_out = "/home/sun/paint/monthly_meri_vertical_tem_90to100E/" ; plv3.check_path(path_out)
-        file_out = "month"+str((pic+1))+"_tem.pdf"
-        plt.savefig(path_out+file_out,dpi=450)
+            # set label
+            axs.set_xticks(np.linspace(-10,40,6))
+            axs.set_xticklabels(create_label_lat(np.linspace(-10,40,6,dtype=int)))
+            axs.set_yticks(np.linspace(1000,200,5,dtype=int))
+            axs.set_yticklabels(np.linspace(1000,200,5,dtype=int))
+            axs.tick_params(axis='both',labelsize=20.5)
+
+            # set axis range
+            axs.set_xlim((-10,40))
+
+            axs.invert_yaxis()
+
+            # set title
+            axs.set_title(month[j],fontsize=30)
+
+            # add topography graph
+            ax2  =  axs.twinx()
+
+            ax2.set_ylim((0,11.5))
+            ax2.tick_params(axis='both',labelsize=20.5)
+
+            ax2.plot(topofile.lat.data,topo/1000,color='k')
+            ax2.fill_between(topofile.lat.data,0,topo/1000,where=topo>0,color='k')
+
+            j += 1
+
+
+    path_out = "/home/sun/paint/monthly_meri_vertical_tem_90to100E/" ; plv3.check_path(path_out)
+    file_out = "Jan_to_May_temperature_90to100.pdf"
+    plt.savefig(path_out+file_out,dpi=450)
 
 
 
