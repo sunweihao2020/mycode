@@ -29,7 +29,7 @@ newcmp = ListedColormap(newcolors)
 newcmp.set_under('white')
 newcmp.set_over('#19345e')
 #levels
-clevs = np.arange(3,16,2)
+clevs = np.arange(3,20,1)
 # Tick labels
 x_tick_labels = []
 for xx in range(70,131,20):
