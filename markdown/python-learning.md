@@ -128,7 +128,8 @@ dataset里面的时间长这样：
 
 [Interpolate NaN values in a numpy array](https://stackoverflow.com/questions/6518811/interpolate-nan-values-in-a-numpy-array)
 
-
+## numpy.interp 使用中的注意事项
+如果是插值到p坐标系上的话，由于p是递减的，而这个函数要求坐标轴的值是递增的，因此需要倒过来插值完再倒回去
 
 ## numpy中的引用问题
 
@@ -797,6 +798,18 @@ q  =  ax.quiver(f2.lon[::4], f2.level[::2], uwind[::2,::4], omega[::2,::4],
 ```
 
 
+### 报错：_tkinter.TclError: unknown color name "white"
+
+解决办法：
+```
+import matplotlib
+matplotlib.use('Agg')
+```
+
+### 使用streamplot画垂直流线的几个问题
+1.  必须坐标系是递增的
+2.  必须坐标轴上是等间距的
+
 
 
 
@@ -941,6 +954,8 @@ plt.show()
 
 在设置刻度的时候可能会覆盖之前设置的ax.set_extent，所以这个语句要放在刻度设置的后面，覆盖回去
 
+## 画图报错 _tkinter.TclError: unknown color name "white"
+这是由于在xshell中打开了X11转发，把它关上就可以了
 
 
 # cartopy

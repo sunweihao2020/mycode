@@ -24,6 +24,10 @@
           <option name="caretOffset" value="236" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/paint/paint_monthly_temperature_90to100_avg.py" />
         </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="5005" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/paint/paint_composite_meridional_circulation_diabatic_heating.py" />
+        </OpenedFileInfo>
       </list>
     </option>
   </component>

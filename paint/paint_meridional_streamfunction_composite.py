@@ -16,7 +16,7 @@ from matplotlib.colors import ListedColormap
 from paint_lunwen_version3_0_fig2a_tem_gradient_20220426 import add_text
 
 
-path0  =  "/home/sun/data/"
+path0  =  "/home/sun/data/composite/"
 
 file0  =  xr.open_dataset(path0+'zonal_meridional_streamfunction_90to100.nc') #The dimension is (61,31,361)
 file1  =  xr.open_dataset(path0+'composite3.nc').sel(level=slice(1000,100))
