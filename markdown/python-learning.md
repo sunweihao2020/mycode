@@ -1153,7 +1153,109 @@ clist=['#40E0D0','#FF8C00','#FF0080']
 newcmp = LinearSegmentedColormap.from_list('chaos',clist)
 ```
 
+## 使用python绘制垂直的流线
+使用python中streamPlot函数绘制流线会带来2个问题
+1. 由于p坐标是递减的，而函数要求坐标递增
+2. 函数要求坐标轴是等间距的
 
+因此，垂直流线的绘制很成问题。对此，这里记录使用python绘制成功流线的设置
+绘制出来的结果如图：[![-2022-07-25-214335.md.png](https://z4a.net/images/2022/07/25/-2022-07-25-214335.md.png)](https://z4a.net/image/2P2yY5)
+函数片段如下：
+```python
+def paint_meridional_circulation():
+    '''This script paint meridional circulation and diabatic heating'''
+    # -------------- import module ---------------------------------
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import sys
+    import xarray as xr
+    import plotly.figure_factory as ff
+    sys.path.append("/home/sun/mycode_git/paint/")
+    from paint_lunwen_version3_0_fig2a_tem_gradient_20220426 import add_text
+    #import matplotlib
+    #matplotlib.use('Agg')
+    
+    ## -------------------------------------------------------------
+
+    # -------------- reference -------------------------------------
+    f0        =  xr.open_dataset(path + "composite3.nc")
+
+    # -------------- variables -------------------------------------
+    var_list  =  cal_zonal_average(lon_slice=slice(90,100),time_slice=[0,10,20,25,27,29,30,32,34])
+
+    v         =  var_list[0]
+    w         =  var_list[1] * -1
+
+
+    ## --------------  unify v and w  ------------------------------
+    multiple  =  np.nanmean(abs(v))/np.nanmean(abs(w))
+    w         =  w * 1000
+
+    ## --------------   vertical interpolate  ----------------------
+    ## fuck python stream plot, it need reverse and interpolate vertical axis
+    old_level =  f0.level.data
+    new_level =  np.linspace(1000,100,37)
+
+    print(new_level)
+    print(old_level)
+
+    new_v     =  np.zeros((v.shape[0],37,v.shape[2]))
+    new_w     =  new_v.copy()
+
+    for tt in range(v.shape[0]):
+        for yy in range(v.shape[2]):
+            
+            new_v[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],v[tt,::-1,yy]) 
+            new_w[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],w[tt,::-1,yy]) 
+            #print(new_w[tt,:,yy])
+            
+    # ------------      date    ----------------------------------
+    dates  =  [-30,-20,-10,-5,-3,-1,0,2,4]
+
+
+    # ------------     paint    ----------------------------------
+    ## set figure
+    fig1 = plt.figure(figsize=(32, 26))
+    spec1 = fig1.add_gridspec(nrows=3, ncols=3)
+
+    j = 0
+
+    for col in range(3):
+        for row in range(3):
+            ax  =  fig1.add_subplot(spec1[row, col])
+
+            # set axis ticks and label
+            ax.set_xticks(np.linspace(-10, 40, 11, dtype=int))
+            ax.set_yticks(np.linspace(1000, 100, 10))
+            ax.set_xticklabels(generate_xlabel(np.linspace(-10, 40, 11, dtype=int)))
+            ax.set_yticklabels(np.linspace(100,1000,10,dtype=int))
+            ax.tick_params(axis='both', labelsize=22.5)
+
+            # set axis limit
+            ax.set_xlim((-10,30))
+
+            # plot stream line
+            ax.streamplot(f0.lat.data, new_level[::-1], new_v[j,::-1], new_w[j,::-1], color='k',linewidth=2.5,density=2,arrowsize=2.75, arrowstyle='->')
+
+
+            # add date
+            add_text(ax=ax, string="D" + str(dates[j]), location=(0.05, 0.91), fontsize=30)
+
+
+            j += 1
+
+
+
+    plt.savefig("/home/sun/paint/monthly_meri_vertical_tem_90to100E/circulation_vertical.pdf", dpi=350)
+
+    plt.show()
+```
+注意的几个点：
+1. w一开始omega，这里乘以了负数，因此w正值为上升运动
+2. 插值到等间距的坐标系，且np.interp也是要求坐标轴为正的。因此这里关于z轴倒了过来，如此操作得到的结果：
+   新数据 z轴是 100 to 1000 的值
+3. 绘图： y轴 100 to 1000 数据为new_v[j,::-1] 因此是1000 to 100的数据匹配100 to 1000的坐标轴，所以得到的图像是正确的。再利用ticklabel把原有的坐标覆盖掉。
+4. Fuck python
 
 # numpy计算总结
 

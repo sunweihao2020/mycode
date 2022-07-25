@@ -346,6 +346,36 @@ cp /public1/home/wgx/swh/cesm2.2.0/cime/scripts/b1850_tx_maritime_h1_220629/user
 ./case.build --skip-provenance-check
 ```
 
+海洋性大陆重启h2 lym服务器上运行，这里不知道为什么到第60年左右运行不了了，使用第59年重启nc文件进行重启
+```shell
+./create_newcase --case b1850_tx_maritime_h2_220725 --res f09_t061 --compset B1850MOM --run-unsupported --compiler intel --mach oneapi
+cd b1850_tx_maritime_h2_220725
+./xmlchange NTASKS=-36
+./xmlchange RUN_REFCASE=b1850_tx_maritime_h1_220721
+./xmlchange RUN_REFDATE=0059-01-01
+./xmlchange RUN_TYPE=branch
+./xmlchange STOP_OPTION=nyears
+./xmlchange STOP_N=2
+./xmlchange RESUBMIT=30
+./xmlchange REST_N=2
+./xmlchange REST_OPTION=nyears
+./case.setup
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_maritime_h1_220721/user_nl_cam .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_maritime_h1_220721/sbatch1.sh .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_maritime_h1_220721/user_nl_mom .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_maritime_h1_220721/user_nl_cice .
+./xmlchange ATM_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_maritime3.220624.nc'
+./xmlchange LND_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_maritime3.220624.nc'
+./xmlchange ICE_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_maritime3.220624.nc'
+./xmlchange OCN_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_maritime3.220624.nc'
+./xmlchange ATM2OCN_FMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_maritime3_aave.220624.nc'
+./xmlchange ATM2OCN_SMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_maritime3_blin.220624.nc'
+./xmlchange ATM2OCN_VMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_maritime3_patc.220624.nc'
+./xmlchange OCN2ATM_FMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_maritime3_TO_fv09_125_aave.220624.nc'
+./xmlchange OCN2ATM_SMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_maritime3_TO_fv09_125_aave.220624.nc'
+./case.build --skip-provenance-check
+```
+
 ## (三) 控制实验的重启
 
 实验名 b1850_control4_220624 享年 0097
@@ -547,6 +577,6 @@ cp b1850_tx_indian_220627/run/*.i.* b1850_tx_indian_o1_220706/run/
 
 
 
-无海洋性大陆实验
+## 无海洋性大陆实验
 
 1. 实验名b1850_tx4_maritime_220624  实验年份0~28年

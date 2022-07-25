@@ -84,6 +84,9 @@ def paint_meridional_circulation():
     import matplotlib.pyplot as plt
     import sys
     import xarray as xr
+    import plotly.figure_factory as ff
+    sys.path.append("/home/sun/mycode_git/paint/")
+    from paint_lunwen_version3_0_fig2a_tem_gradient_20220426 import add_text
     #import matplotlib
     #matplotlib.use('Agg')
     
@@ -98,9 +101,10 @@ def paint_meridional_circulation():
     v         =  var_list[0]
     w         =  var_list[1] * -1
 
+
     ## --------------  unify v and w  ------------------------------
-    multiple  =  np.average(abs(v))/np.average(abs(w))
-    w         =  w * multiple
+    multiple  =  np.nanmean(abs(v))/np.nanmean(abs(w))
+    w         =  w * 1000
 
     ## --------------   vertical interpolate  ----------------------
     ## fuck python stream plot, it need reverse and interpolate vertical axis
@@ -115,10 +119,14 @@ def paint_meridional_circulation():
 
     for tt in range(v.shape[0]):
         for yy in range(v.shape[2]):
-            #print(v[tt,:,yy])
-            new_v[tt,:,yy]     =  np.interp(new_level,old_level,v[tt,:,yy])
-            new_w[tt,:,yy]     =  np.interp(new_level,old_level,w[tt,:,yy])
-            #print(new_v[tt,:,yy])
+            
+            new_v[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],v[tt,::-1,yy]) 
+            new_w[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],w[tt,::-1,yy]) 
+            #print(new_w[tt,:,yy])
+            
+    # ------------      date    ----------------------------------
+    dates  =  [-30,-20,-10,-5,-3,-1,0,2,4]
+
 
     # ------------     paint    ----------------------------------
     ## set figure
@@ -132,14 +140,24 @@ def paint_meridional_circulation():
             ax  =  fig1.add_subplot(spec1[row, col])
 
             # set axis ticks and label
-            ax.set_xticks(np.linspace(-10, 30, 9, dtype=int))
+            ax.set_xticks(np.linspace(-10, 40, 11, dtype=int))
             ax.set_yticks(np.linspace(1000, 100, 10))
-            ax.set_xticklabels(generate_xlabel(np.linspace(-10, 30, 9, dtype=int)))
+            ax.set_xticklabels(generate_xlabel(np.linspace(-10, 40, 11, dtype=int)))
+            ax.set_yticklabels(np.linspace(100,1000,10,dtype=int))
             ax.tick_params(axis='both', labelsize=22.5)
 
+            # set axis limit
+            ax.set_xlim((-10,30))
+
             # plot stream line
-            #ax.streamplot(f0.lat, new_level[::-1], new_v[j,::-1,:], new_w[j,::-1,:], color='k',linewidth=2.5,density=1.2,arrowsize=2.75, arrowstyle='->')
-            ax.contour(f0.lat, new_level, new_v[j])
+            ax.streamplot(f0.lat.data, new_level[::-1], new_v[j,::-1], new_w[j,::-1], color='k',linewidth=2.5,density=2,arrowsize=2.75, arrowstyle='->')
+            #ax.invert_yaxis()
+            #ax.contour(f0.lat, new_level, new_w[j])
+           # ax.streamplot(f0.lat, new_level[::-1], new_v[j], new_w[j], color='k',linewidth=2.5,density=1.2,arrowsize=2.75, arrowstyle='->')
+
+            # add date
+            add_text(ax=ax, string="D" + str(dates[j]), location=(0.05, 0.91), fontsize=30)
+
 
             j += 1
 
