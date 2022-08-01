@@ -6,6 +6,8 @@ include:
 2. temperature gradient
 3. diabatic heating
 '''
+import warnings
+warnings.filterwarnings("ignore")  # close warning message
 path  =  "/home/sun/data/composite/"
 
 
@@ -34,7 +36,6 @@ def cal_zonal_average(lon_slice,time_slice):
     physics   =    np.nanmean(f1.physics,axis=3)
 
     return vwind,omega,tem_gradient_avg,latent,sensible,physics
-
 
 def cal_gradient_meridional(vars):
     '''
@@ -85,6 +86,7 @@ def paint_meridional_circulation():
     import sys
     import xarray as xr
     import plotly.figure_factory as ff
+    import cmasher as cmr
     sys.path.append("/home/sun/mycode_git/paint/")
     from paint_lunwen_version3_0_fig2a_tem_gradient_20220426 import add_text
     #import matplotlib
@@ -94,44 +96,69 @@ def paint_meridional_circulation():
 
     # -------------- reference -------------------------------------
     f0        =  xr.open_dataset(path + "composite3.nc")
+    f1        =  xr.open_dataset(path + "composite-heating-merra.nc")
 
     # -------------- variables -------------------------------------
     var_list  =  cal_zonal_average(lon_slice=slice(90,100),time_slice=[0,10,20,25,27,29,30,32,34])
 
+    # circulation variables
     v         =  var_list[0]
     w         =  var_list[1] * -1
+
+    # temperature variables
+    tem_gradient  =  var_list[2]
+
+    # diabatic heating variables
+    latent        =  var_list[3]
+    sensible      =  var_list[4]
 
 
     ## --------------  unify v and w  ------------------------------
     multiple  =  np.nanmean(abs(v))/np.nanmean(abs(w))
-    w         =  w * 1000
+    w         =  w * 500
+    print(multiple)
 
     ## --------------   vertical interpolate  ----------------------
     ## fuck python stream plot, it need reverse and interpolate vertical axis
-    old_level =  f0.level.data
     new_level =  np.linspace(1000,100,37)
 
-    print(new_level)
-    print(old_level)
+
 
     new_v     =  np.zeros((v.shape[0],37,v.shape[2]))
     new_w     =  new_v.copy()
 
+    new_t     =  new_v.copy()
+
+    new_s     =  np.zeros((latent.shape[0],37,latent.shape[2]))
+    new_l     =  new_s.copy()
+
     for tt in range(v.shape[0]):
         for yy in range(v.shape[2]):
-            
-            new_v[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],v[tt,::-1,yy]) 
-            new_w[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],w[tt,::-1,yy]) 
-            #print(new_w[tt,:,yy])
-            
+            old_level =  f0.level.data
+            new_v[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],v[tt,::-1,yy])  #Here I did not invert after interpolate
+            new_w[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],w[tt,::-1,yy])  #But the result paint is not error
+
+            new_t[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],tem_gradient[tt,::-1,yy]) ; new_t[tt,:,yy]  =  new_t[tt,::-1,yy]
+
+    for tt in range(sensible.shape[0]):
+        for yy in range(sensible.shape[2]):
+            old_level =  f1.level.data  # Because this variables belongs to two files, the vertical corrdinate is not the same
+            new_s[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],sensible[tt,::-1,yy])     ; new_s[tt,:,yy]  =  new_s[tt,::-1,yy]
+            new_l[tt,:,yy]     =  np.interp(new_level[::-1],old_level[::-1],latent[tt,::-1,yy])       ; new_l[tt,:,yy]  =  new_l[tt,::-1,yy]
+
+    print("Successful interpolate variables")
     # ------------      date    ----------------------------------
     dates  =  [-30,-20,-10,-5,-3,-1,0,2,4]
 
 
     # ------------     paint    ----------------------------------
     ## set figure
-    fig1 = plt.figure(figsize=(32, 26))
+    fig1 = plt.figure(figsize=(34, 30))
     spec1 = fig1.add_gridspec(nrows=3, ncols=3)
+
+    ## set cmap
+    cmap = cmr.holly                  # CMasher
+    #cmap = plt.get_cmap('cmr.rainforest')
 
     j = 0
 
@@ -142,28 +169,55 @@ def paint_meridional_circulation():
             # set axis ticks and label
             ax.set_xticks(np.linspace(-10, 40, 11, dtype=int))
             ax.set_yticks(np.linspace(1000, 100, 10))
+
             ax.set_xticklabels(generate_xlabel(np.linspace(-10, 40, 11, dtype=int)))
-            ax.set_yticklabels(np.linspace(100,1000,10,dtype=int))
+            #ax.set_yticklabels(np.linspace(100,1000,10,dtype=int))
             ax.tick_params(axis='both', labelsize=22.5)
 
             # set axis limit
-            ax.set_xlim((-10,30))
+            ax.set_xlim((-10,40))
+
+            # plot contourf picture
+            ## temperature gradient
+            im1 = ax.contourf(f0.lat.data, new_level, new_t[j]*1e5,levels=np.linspace(-3,3,13),extend='both',cmap=cmap)
+            im2 = ax.contour(f0.lat.data, new_level, new_t[j]*1e5,levels=[0],colors='gray',linewidths=4,linestyles='--')
 
             # plot stream line
-            ax.streamplot(f0.lat.data, new_level[::-1], new_v[j,::-1], new_w[j,::-1], color='k',linewidth=2.5,density=2,arrowsize=2.75, arrowstyle='->')
-            #ax.invert_yaxis()
-            #ax.contour(f0.lat, new_level, new_w[j])
-           # ax.streamplot(f0.lat, new_level[::-1], new_v[j], new_w[j], color='k',linewidth=2.5,density=1.2,arrowsize=2.75, arrowstyle='->')
+            #ax2  =  ax.twinx()
+            #ax2.streamplot(f0.lat.data, new_level[::-1], new_v[j,::-1], new_w[j,::-1], color='k',linewidth=2.5,density=2,arrowsize=2.75, arrowstyle='->')
+            #ax2.set_yticklabels([])
 
+            ## diabatic heating
+            im3 = ax.contour(f1.lat.data, new_level, new_s[j],levels=np.linspace(2,12,6),colors='red',linewidths=2.5)
+            ax.clabel(im3,fontsize=30)
+
+            im4 = ax.contour(f1.lat.data, new_level, new_l[j],levels=np.linspace(4,12,5),colors='blue',linewidths=3)
+            ax.clabel(im4,fontsize=30)
+            ax.invert_yaxis()
+
+            # set nan value black
+            ax.set_facecolor("black")
+
+            
+
+            
             # add date
             add_text(ax=ax, string="D" + str(dates[j]), location=(0.05, 0.91), fontsize=30)
 
 
             j += 1
 
+    ## set colorbar
+    fig1.subplots_adjust(top=0.8) 
+
+    cbar_ax = fig1.add_axes([0.2, 0.05, 0.6, 0.03])  
+    cb      = fig1.colorbar(im1, cax=cbar_ax, shrink=0.5, pad=0.2, orientation='horizontal') 
+
+    cb.ax.tick_params(labelsize=25)
 
 
-    plt.savefig("/home/sun/paint/monthly_meri_vertical_tem_90to100E/circulation_vertical.pdf", dpi=350)
+    plt_path  =  "/home/sun/paint/circulation_based_on_composite_result/"
+    plt.savefig(plt_path+"composite_meri_vert_circulation_90to100_temp_heating.pdf", dpi=400)
 
     plt.show()
 

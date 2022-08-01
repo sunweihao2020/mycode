@@ -405,6 +405,43 @@ cp b1850_control4_220624/run/*rpo* b1850_control_h1_220702/run/
 cp b1850_control4_220624/run/*.i.* b1850_control_h1_220702/run/
 ```
 
+## (四)无印度大陆实验的重启
+<font color=red>跑到第85年左右断了，这里再续个三十年spinup</font>
+
+```shell
+./create_newcase --case b1850_tx_indian_h2_220731 --res f09_t061 --compset B1850MOM --run-unsupported --compiler intel --mach oneapi
+cd b1850_tx_indian_h2_220731
+./xmlchange NTASKS=-40
+./xmlchange RUN_REFCASE=b1850_tx_indian_h1_220726
+./xmlchange RUN_REFDATE=0085-01-01
+./xmlchange RUN_TYPE=hybrid
+./xmlchange STOP_OPTION=nyears
+./xmlchange STOP_N=2
+./xmlchange RESUBMIT=12
+./xmlchange REST_N=2
+./xmlchange REST_OPTION=nyears
+./case.setup
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h1_220726/user_nl_cam .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h1_220726/sbatch1.sh .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h1_220726/user_nl_mom .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h1_220726/user_nl_cice .
+./xmlchange ATM_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_noindian.220615.nc'
+./xmlchange LND_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_noindian.220615.nc'
+./xmlchange ICE_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_noindian.220615.nc'
+./xmlchange OCN_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_noindian.220615.nc'
+./xmlchange ATM2OCN_FMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_noindian_aave.220615.nc'
+./xmlchange ATM2OCN_SMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_noindian_blin.220615.nc'
+./xmlchange ATM2OCN_VMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_noindian_patc.220615.nc'
+./xmlchange OCN2ATM_FMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_noindian_TO_fv09_125_aave.220615.nc'
+./xmlchange OCN2ATM_SMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_noindian_TO_fv09_125_aave.220615.nc'
+./case.build --skip-provenance-check
+
+cp b1850_tx_indian_h1_220726/run/*.r.*85* b1850_tx_indian_h2_220731/run/
+cp b1850_tx_indian_h1_220726/run/*.rs.*85* b1850_tx_indian_h2_220731/run/
+cp b1850_tx_indian_h1_220726/run/*rpo*85* b1850_tx_indian_h2_220731/run/
+cp b1850_tx_indian_h1_220726/run/*.i.*85* b1850_tx_indian_h2_220731/run/
+```
+
 # SPIN UP 后的正式实验
 
 （1）control
@@ -520,6 +557,31 @@ cp /public1/home/lym/swh/cesm2.1.3/scratch/b1850_global1m_o2_220703/run/*.rs.* /
 cp /public1/home/lym/swh/cesm2.1.3/scratch/b1850_global1m_o2_220703/run/*.i.* /public1/home/lym/swh/cesm2.1.3/scratch/b1850_global1m_o3_220711/run/
 ```
 
+ 由于我错把lym服务器清空了，所幸global 1m的实验restart场得以保留，因此在wgx上重启1m的控制实验
+```shell
+./create_newcase --case b1850_global1m_o1_220726 --res f09_t061 --compset B1850MOM --run-unsupported --compiler intel --mach oneapi
+cd b1850_global1m_o1_220726
+./xmlchange NTASKS=-46
+./xmlchange RUN_REFCASE=b1850_global_1m_220620
+./xmlchange RUN_REFDATE=0099-01-01
+./xmlchange RUN_TYPE=hybrid
+./xmlchange STOP_OPTION=nyears
+./xmlchange STOP_N=2
+./xmlchange RESUBMIT=30
+./xmlchange REST_N=2
+./xmlchange REST_OPTION=nyears
+./case.setup
+cp /public1/home/wgx/swh/cesm2.2.0/cime/scripts/b1850_control_o1_220703/user_nl_cam .
+cp /public1/home/wgx/swh/cesm2.2.0/cime/scripts/b1850_control_o1_220703/sbatch1.sh .
+cp /public1/home/wgx/swh/cesm2.2.0/cime/scripts/b1850_control_o1_220703/user_nl_mom .
+cp /public1/home/wgx/swh/cesm2.2.0/cime/scripts/b1850_control_o1_220703/user_nl_cice .
+
+./case.build --skip-provenance-check
+
+cp /public1/home/lym/swh/cesm2.1.3/scratch/b1850_global1m_o2_220703/run/*.r.* /public1/home/lym/swh/cesm2.1.3/scratch/b1850_global1m_o3_220711/run/
+cp /public1/home/lym/swh/cesm2.1.3/scratch/b1850_global1m_o2_220703/run/*.rs.* /public1/home/lym/swh/cesm2.1.3/scratch/b1850_global1m_o3_220711/run/
+cp /public1/home/lym/swh/cesm2.1.3/scratch/b1850_global1m_o2_220703/run/*.i.* /public1/home/lym/swh/cesm2.1.3/scratch/b1850_global1m_o3_220711/run/
+```
 
 
 
@@ -562,6 +624,79 @@ cp b1850_tx_indian_220627/run/*.r.* b1850_tx_indian_o1_220706/run/
 cp b1850_tx_indian_220627/run/*.rs.* b1850_tx_indian_o1_220706/run/
 cp b1850_tx_indian_220627/run/*rpo* b1850_tx_indian_o1_220706/run/
 cp b1850_tx_indian_220627/run/*.i.* b1850_tx_indian_o1_220706/run/
+```
+
+<font color=red>2022-7-26重新跑的印度大陆实验，还在spinup的阶段，已经运行了59年，但是我忘记把地形给抹去了，所以重开一个然后把地形抹去</font>
+
+```shell
+./create_newcase --case b1850_tx_indian_h1_220726 --res f09_t061 --compset B1850MOM --run-unsupported --compiler intel --mach oneapi
+cd b1850_tx_indian_h1_220726
+./xmlchange NTASKS=-40
+./xmlchange RUN_REFCASE=b1850_tx_indian_h0_220718
+./xmlchange RUN_REFDATE=0059-01-01
+./xmlchange RUN_TYPE=branch
+./xmlchange STOP_OPTION=nyears
+./xmlchange STOP_N=2
+./xmlchange RESUBMIT=25
+./xmlchange REST_N=2
+./xmlchange REST_OPTION=nyears
+./case.setup
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h0_220718/user_nl_cam .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h0_220718/sbatch1.sh .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h0_220718/user_nl_mom .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h0_220718/user_nl_cice .
+./xmlchange ATM_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_noindian.220615.nc'
+./xmlchange LND_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_noindian.220615.nc'
+./xmlchange ICE_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_noindian.220615.nc'
+./xmlchange OCN_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_noindian.220615.nc'
+./xmlchange ATM2OCN_FMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_noindian_aave.220615.nc'
+./xmlchange ATM2OCN_SMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_noindian_blin.220615.nc'
+./xmlchange ATM2OCN_VMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_noindian_patc.220615.nc'
+./xmlchange OCN2ATM_FMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_noindian_TO_fv09_125_aave.220615.nc'
+./xmlchange OCN2ATM_SMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_noindian_TO_fv09_125_aave.220615.nc'
+./case.build --skip-provenance-check
+
+cp b1850_tx_indian_h0_220718/run/*.r.* b1850_tx_indian_h1_220726/run/
+cp b1850_tx_indian_h0_220718/run/*.rs.* b1850_tx_indian_h1_220726/run/
+cp b1850_tx_indian_h0_220718/run/*rpo* b1850_tx_indian_h1_220726/run/
+cp b1850_tx_indian_h0_220718/run/*.i.* b1850_tx_indian_h1_220726/run/
+```
+
+(4) maritime experiment
+<font color=red>2022-7-30海洋性大陆实验的spinup基本完成了，接下来开始跑正式实验</font>
+
+```shell
+./create_newcase --case b1850_tx_maritime_o1_220730 --res f09_t061 --compset B1850MOM --run-unsupported --compiler intel --mach oneapi
+cd b1850_tx_maritime_o1_220730
+./xmlchange NTASKS=-36
+./xmlchange RUN_REFCASE=b1850_tx_maritime_h2_220725
+./xmlchange RUN_REFDATE=0095-01-01
+./xmlchange RUN_TYPE=hybrid
+./xmlchange STOP_OPTION=nyears
+./xmlchange STOP_N=2
+./xmlchange RESUBMIT=28
+./xmlchange REST_N=2
+./xmlchange REST_OPTION=nyears
+./case.setup
+cp /public1/home/wgx/swh/cesm2.2.0/cime/scripts/b1850_global1m_o1_220726/user_nl_cam .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h1_220726/sbatch1.sh .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h1_220726/user_nl_mom .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_indian_h1_220726/user_nl_cice .
+./xmlchange ATM_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_maritime3.220624.nc'
+./xmlchange LND_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_maritime3.220624.nc'
+./xmlchange ICE_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_maritime3.220624.nc'
+./xmlchange OCN_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_maritime3.220624.nc'
+./xmlchange ATM2OCN_FMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_maritime3_aave.220624.nc'
+./xmlchange ATM2OCN_SMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_maritime3_blin.220624.nc'
+./xmlchange ATM2OCN_VMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_maritime3_patc.220624.nc'
+./xmlchange OCN2ATM_FMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_maritime3_TO_fv09_125_aave.220624.nc'
+./xmlchange OCN2ATM_SMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_maritime3_TO_fv09_125_aave.220624.nc'
+./case.build --skip-provenance-check
+
+cp b1850_tx_maritime_h2_220725/run/*.r.* b1850_tx_maritime_o1_220730/run/
+cp b1850_tx_maritime_h2_220725/run/*.rs.* b1850_tx_maritime_o1_220730/run/
+cp b1850_tx_maritime_h2_220725/run/*rpo* b1850_tx_maritime_o1_220730/run/
+cp b1850_tx_maritime_h2_220725/run/*.i.* b1850_tx_maritime_o1_220730/run/
 ```
 
 
