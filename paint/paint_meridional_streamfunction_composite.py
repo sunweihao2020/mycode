@@ -74,9 +74,7 @@ def paint_meridional_stream():
             ax.tick_params(axis='both', labelsize=22.5)
 
             # plot streamfunction
-            mpsi  =  interp_mpsi()
-            mpsi  /= 1e11
-            im    = ax.contourf(file1.lat.data, file1.level.data,mpsi[start,::-1,:],np.linspace(-2.8,2.8,29),cmap=newcmp,extend='both')
+            im    = ax.contourf(file0.lat.data, file0.lev.data,file0.meridional_streamfunction.data[j]/1e11,np.linspace(-2.8,2.8,29),cmap=newcmp,extend='both')
 
             # set range
             ax.set_xlim((-10,30))
@@ -101,7 +99,7 @@ def paint_meridional_stream():
     cb = fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=25)
 
-    plt.savefig('/home/sun/paint/meridional_tem_gradient_circulation/meridional_st_90to100_0to+8.pdf', dpi=400)
+    plt.savefig('/home/sun/paint/meridional_tem_gradient_circulation/meridional_st_90to100_check.pdf', dpi=400)
     plt.show()
 
 def main():
