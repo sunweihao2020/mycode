@@ -11,28 +11,39 @@ begin
     f2        =  addfile(src_path  +  "composite_divergent_wind_220731.nc","r")
     f3        =  addfile(src_path  +  "composite3.nc","r")
 
-    ps        =  f1->PS(:,:,{90:100})
-    ;printVarSummary(ps)
+    ps_meri   =  f1->PS(:,:,{90:100})
+    ps_zonal  =  f1->PS(:,{10:15},:)
 
     ; f1 do not include lat/lon message, I need to set it
 
-    du        =  f2->divergent_u(:,:,:,432:448)
+    du        =  f2->divergent_u(:,:,200:210,:)
     dv        =  f2->divergent_v(:,:,:,432:448)
 
     ; calculate zonal average of above variables
-    ps_a      =  dim_avg_n_Wrap(ps, 2)  ; (time,lat)
+    ps_meri_a      =  dim_avg_n_Wrap(ps_meri, 2)  ; (time,lat)
+    ps_zonal_a     =  dim_avg_n_Wrap(ps_zonal,1)  ; (time,lon)
 
-    du_a      =  dim_avg_n_Wrap(du, 3)  ; (time,lev,lat)
-    dv_a      =  dim_avg_n_Wrap(dv, 3)
+    du_a      =  dim_avg_n_Wrap(du, 2)  ; (time,lev,lon)
+    dv_a      =  dim_avg_n_Wrap(dv, 3)  ; (time,lev,lat)
 
     ; calculate dpres_plevel
-    dp        =  dv_a
+    dp_meri   =  dv_a
+    dp_zonal  =  du_a
     level     =  f3->level
     ptop      =  0
     iopt      =  0
+
+    ; meridional dp
     do tt = 0,60
         do latt = 0,360
-            dp(tt,:,latt)  =  dpres_plevel(level*100,ps_a(tt,latt),ptop,iopt)
+            dp_meri(tt,:,latt)  =  dpres_plevel(level*100,ps_meri_a(tt,latt),ptop,iopt)
+        end do
+    end do
+
+    ; zonal dp
+    do tt = 0,60
+        do lonn = 0,575
+            dp_zonal(tt,:,lonn)  =  dpres_plevel(level*100,ps_zonal_a(tt,lonn),ptop,iopt)
         end do
     end do
 
@@ -43,34 +54,53 @@ begin
     nlev   =   42
     lat    =   f3->lat
 
-    meri_sfm  =  dv_a
+    meri_sfm    =  dv_a
+    zonal_sfm   =  du_a
 
     ; calculate meridional function
     do tt  = 0,60,1
         do inl = 0, nlev-1, 1
-            meri_sfm(tt,inl,:) = dim_sum_n(dv_a(tt,inl:nlev-1,:)*dp(tt,inl:nlev-1,:),0)
+            meri_sfm(tt,inl,:) = dim_sum_n(dv_a(tt,inl:nlev-1,:)*dp_meri(tt,inl:nlev-1,:),0)
             meri_sfm(tt,inl,:) = meri_sfm(tt,inl,:)*2*pi*cos(lat*pi/180.0)*a/g
         end do
     end do
+
+    ; calculate zonal function
+    do tt  = 0,60,1
+        do inl = 0, nlev-1, 1
+            zonal_sfm(tt,inl,:) = dim_sum_n(du_a(tt,inl:nlev-1,:)*dp_zonal(tt,inl:nlev-1,:),0)
+            zonal_sfm(tt,inl,:) = zonal_sfm(tt,inl,:)*2*pi*a/g
+        end do
+    end do
+
     ; set coordinate message
     meri_sfm!0  =  "time"
     meri_sfm!1  =  "lev"
     meri_sfm!2  =  "lat"
 
+    zonal_sfm!0  =  "time"
+    zonal_sfm!1  =  "lev"
+    zonal_sfm!2  =  "lon"
+
     meri_sfm&time  =  fspan(1,61,61)
     meri_sfm&lev   =  f3->level
     meri_sfm&lat   =  f3->lat
+
+    zonal_sfm&time  =  fspan(1,61,61)
+    zonal_sfm&lev   =  f3->level
+    zonal_sfm&lon   =  f3->lon
     printVarSummary(meri_sfm)
+    printVarSummary(zonal_sfm)
 
-    fout = addfile(src_path+"composite_calculate_regional_streamfunction.nc","c")
-  
-    filedimdef(fout,"time",-1,True)
-    fout->meridional_streamfunction  =  meri_sfm
+   fout = addfile(src_path+"composite_calculate_regional_streamfunction_zonal_meridional_220804.nc","c")
 
+   filedimdef(fout,"time",-1,True)
+   fout->meridional_streamfunction  =  meri_sfm
+   fout->zonal_streamfunction       =  zonal_sfm
 
-    fileatt  =  True
-    fileatt@time  =  "2022-8-2"
-    fileatt@description  =  "This file includes regional streamfunction calculated by me, zonal range is 90 to 100"  
+   fileatt       =  True
+   fileatt@time  =  "2022-8-4"
+   fileatt@description  =  "This file includes regional streamfunction calculated by me, zonal range is 90 to 100, meridional range is 10 to 15N"  
 
 
 
