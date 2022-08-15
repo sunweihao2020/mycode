@@ -662,6 +662,41 @@ cp b1850_tx_indian_h0_220718/run/*rpo* b1850_tx_indian_h1_220726/run/
 cp b1850_tx_indian_h0_220718/run/*.i.* b1850_tx_indian_h1_220726/run/
 ```
 
+spin-up 结束后的正式实验
+```shell
+./create_newcase --case b1850_tx_indian_o1_220808 --res f09_t061 --compset B1850MOM --run-unsupported --compiler intel --mach oneapi
+cd b1850_tx_indian_o1_220808
+./xmlchange NTASKS=-40
+./xmlchange RUN_REFCASE=b1850_tx_indian_h2_220731
+./xmlchange RUN_REFDATE=0027-01-01
+./xmlchange RUN_TYPE=hybrid
+./xmlchange STOP_OPTION=nyears
+./xmlchange STOP_N=2
+./xmlchange RESUBMIT=26
+./xmlchange REST_N=2
+./xmlchange REST_OPTION=nyears
+./case.setup
+cp /public1/home/wgx/swh/cesm2.2.0/cime/scripts/b1850_global1m_o1_220726/user_nl_cam .
+cp /public1/home/wgx/swh/cesm2.2.0/cime/scripts/b1850_global1m_o1_220726/sbatch1.sh .
+cp /public1/home/wgx/swh/cesm2.2.0/cime/scripts/b1850_global1m_o1_220726/user_nl_mom .
+cp /public1/home/wgx/swh/cesm2.2.0/cime/scripts/b1850_global1m_o1_220726/user_nl_cice .
+./xmlchange ATM_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_noindian.220615.nc'
+./xmlchange LND_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_noindian.220615.nc'
+./xmlchange ICE_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_noindian.220615.nc'
+./xmlchange OCN_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_noindian.220615.nc'
+./xmlchange ATM2OCN_FMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_noindian_aave.220615.nc'
+./xmlchange ATM2OCN_SMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_noindian_blin.220615.nc'
+./xmlchange ATM2OCN_VMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_noindian_patc.220615.nc'
+./xmlchange OCN2ATM_FMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_noindian_TO_fv09_125_aave.220615.nc'
+./xmlchange OCN2ATM_SMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_noindian_TO_fv09_125_aave.220615.nc'
+./case.build --skip-provenance-check
+
+cp b1850_tx_indian_h2_220731/run/*.r.*85*  b1850_tx_indian_o1_220808/run/
+cp b1850_tx_indian_h2_220731/run/*.rs.*85* b1850_tx_indian_o1_220808/run/
+cp b1850_tx_indian_h2_220731/run/*rpo*85*  b1850_tx_indian_o1_220808/run/
+cp b1850_tx_indian_h2_220731/run/*.i.*85*  b1850_tx_indian_o1_220808/run/
+```
+
 (4) maritime experiment
 <font color=red>2022-7-30海洋性大陆实验的spinup基本完成了，接下来开始跑正式实验</font>
 
@@ -697,6 +732,40 @@ cp b1850_tx_maritime_h2_220725/run/*.r.* b1850_tx_maritime_o1_220730/run/
 cp b1850_tx_maritime_h2_220725/run/*.rs.* b1850_tx_maritime_o1_220730/run/
 cp b1850_tx_maritime_h2_220725/run/*rpo* b1850_tx_maritime_o1_220730/run/
 cp b1850_tx_maritime_h2_220725/run/*.i.* b1850_tx_maritime_o1_220730/run/
+```
+
+```shell
+./create_newcase --case b1850_tx_maritime_o2_220807 --res f09_t061 --compset B1850MOM --run-unsupported --compiler intel --mach oneapi
+cd b1850_tx_maritime_o2_220807
+./xmlchange NTASKS=-45
+./xmlchange RUN_REFCASE=b1850_tx_maritime_o1_220730
+./xmlchange RUN_REFDATE=0043-01-01
+./xmlchange RUN_TYPE=hybrid
+./xmlchange STOP_OPTION=nyears
+./xmlchange STOP_N=3
+./xmlchange RESUBMIT=6
+./xmlchange REST_N=3
+./xmlchange REST_OPTION=nyears
+./case.setup
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_maritime_o1_220730/user_nl_cam .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_maritime_o1_220730/sbatch1.sh .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_maritime_o1_220730/user_nl_mom .
+cp /public1/home/lym/swh/cesm/cime/scripts/b1850_tx_maritime_o1_220730/user_nl_cice .
+./xmlchange ATM_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_maritime3.220624.nc'
+./xmlchange LND_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.lnd.fv09_125_t66_maritime3.220624.nc'
+./xmlchange ICE_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_maritime3.220624.nc'
+./xmlchange OCN_DOMAIN_FILE='/public1/home/wgx/swh/cesm2.1.3/inputdata/share/domains/domain.ocn.t66_maritime3.220624.nc'
+./xmlchange ATM2OCN_FMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_maritime3_aave.220624.nc'
+./xmlchange ATM2OCN_SMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_maritime3_blin.220624.nc'
+./xmlchange ATM2OCN_VMAPNAME='cpl/gridmaps/fv0.9x1.25/map_fv09_125_TO_t66_maritime3_patc.220624.nc'
+./xmlchange OCN2ATM_FMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_maritime3_TO_fv09_125_aave.220624.nc'
+./xmlchange OCN2ATM_SMAPNAME='cpl/gridmaps/tx0.66v1/map_t66_maritime3_TO_fv09_125_aave.220624.nc'
+./case.build --skip-provenance-check
+
+cp b1850_tx_maritime_o1_220730/run/*.r.*  b1850_tx_maritime_o2_220807/run/
+cp b1850_tx_maritime_o1_220730/run/*.rs.* b1850_tx_maritime_o2_220807/run/
+cp b1850_tx_maritime_o1_220730/run/*rpo*  b1850_tx_maritime_o2_220807/run/
+cp b1850_tx_maritime_o1_220730/run/*.i.*  b1850_tx_maritime_o2_220807/run/
 ```
 
 
