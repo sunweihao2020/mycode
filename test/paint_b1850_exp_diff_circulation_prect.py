@@ -11,6 +11,54 @@ import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 
 
+def set_cartopy_tick(ax, extent, xticks, yticks, nx=0, ny=0,
+    xformatter=None, yformatter=None,labelsize=20):
+    import matplotlib.ticker as mticker
+    from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
+    # 本函数设置地图上的刻度 + 地图的范围
+    proj = ccrs.PlateCarree()
+    ax.set_xticks(xticks, crs=proj)
+    ax.set_yticks(yticks, crs=proj)
+    # 设置次刻度.
+    xlocator = mticker.AutoMinorLocator(nx + 1)
+    ylocator = mticker.AutoMinorLocator(ny + 1)
+    ax.xaxis.set_minor_locator(xlocator)
+    ax.yaxis.set_minor_locator(ylocator)
+
+    # 设置Formatter.
+    if xformatter is None:
+        xformatter = LongitudeFormatter()
+    if yformatter is None:
+        yformatter = LatitudeFormatter()
+    ax.xaxis.set_major_formatter(xformatter)
+    ax.yaxis.set_major_formatter(yformatter)
+
+    # 设置axi label_size，这里默认为两个轴
+    ax.tick_params(axis='both',labelsize=labelsize)
+
+    # 在最后调用set_extent,防止刻度拓宽显示范围.
+    if extent is None:
+        ax.set_global()
+    else:
+        ax.set_extent(extent, crs=proj)
+
+def add_vector_legend(ax,q,location=(0.825, 0),length=0.175,wide=0.2,fc='white',ec='k',lw=0.5,order=1,quiver_x=0.915,quiver_y=0.125,speed=5,fontsize=18):
+    '''
+    句柄 矢量 位置 图例框长宽 表面颜色 边框颜色  参考箭头的位置 参考箭头大小 参考label字体大小
+    '''
+    import matplotlib as mpl
+    rect = mpl.patches.Rectangle((location[0], location[1]), length, wide, transform=ax.transAxes,    # 这个能辟出来一块区域，第一个参数是最左下角点的坐标，后面是矩形的长和宽
+                            fc=fc, ec=ec, lw=lw, zorder=order
+                            )
+    ax.add_patch(rect)
+
+    ax.quiverkey(q, X=quiver_x, Y=quiver_y, U=speed,
+                    label=f'{speed} m/s', labelpos='S', labelsep=0.1,fontproperties={'size':fontsize})
+
+
+def add_text(ax, string, props=dict(boxstyle='square', edgecolor='white', facecolor='white', alpha=1),
+             location=(0.05, 0.9), fontsize=15):
+    ax.text(location[0], location[1], string, transform=ax.transAxes, bbox=props, fontsize=fontsize)
 
     
 def paint_pentad_circulation():
@@ -19,18 +67,13 @@ def paint_pentad_circulation():
     from matplotlib import cm
     from matplotlib.colors import ListedColormap
 
-    import sys
-    sys.path.append("/home/sun/mycode/paint/")
-    from paint_lunwen_version3_0_fig2b_2m_tem_wind_20220426 import set_cartopy_tick,save_fig,add_vector_legend
-    from paint_lunwen_version3_0_fig2a_tem_gradient_20220426 import add_text
-
 
 
     import matplotlib
     matplotlib.use('Agg')
     ## ------------------------
 
-    path_out  =  "/home/sun/data/model_data/climate/"
+    path_out   =  "/Users/sunweihao/ubuntu-server-data/model_data/climate/"
     file_out1  =  "b1850_control_atmospheric_monthly_average.nc"
     file_out2  =  "b1850_maritime_atmospheric_monthly_average.nc"
     f0        =  xr.open_dataset(path_out+file_out1)
@@ -98,7 +141,7 @@ def paint_pentad_circulation():
     cb  =  fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=20)
 
-    save_fig(path_out="/home/sun/paint/b1850_exp/",file_out="b1850_diff_monthly_925_circulation_with_prect.pdf")
+    plt.savefig("test1.pdf",dpi=300)
 
 
 
