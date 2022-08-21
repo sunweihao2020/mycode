@@ -104,11 +104,16 @@ def test():
     f0 = xr.open_dataset(path0 + "0101.climate.nc")
     a  = list(f0.attrs)
     print(f0["H"].attrs.keys())
+
 def main():
     import warnings
+    import time
+    start = time.time()
     warnings.filterwarnings("ignore")
 
     cal_jan_jul_average()
+    end = time.time()
+    print(end-start)
 
 
 if __name__ == "__main__":
