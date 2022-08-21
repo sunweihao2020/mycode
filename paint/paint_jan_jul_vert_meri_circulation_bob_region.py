@@ -19,9 +19,13 @@ def cal_jan_jul_average():
 
     # calculate monthly
     ## reference file
-    f0         =  xr.open_dataset(path0+"01101")
+    f0         =  xr.open_dataset(path0+"0101.climate.nc")
 
-    print(np.sum(days))
+    ### get datasets vars name
+    vars = list(f0.keys())
+    print(vars)
+
+
 
 def main():
     cal_jan_jul_average()
