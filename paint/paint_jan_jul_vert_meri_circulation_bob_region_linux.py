@@ -41,13 +41,12 @@ def cal_jan_jul_average():
             #print("end is %d" % end)
 
             for dd in range(start,end):
-                print(type(dd))
                 f1         =   xr.open_dataset(path0+file_list[dd])
                 base[mon]  +=  f1[vvvv].data[0] / period
 
         # save array to xarray dataarray
         monthly_avg[vvvv]  =  create_base_dataarray(base)
-        print(monthly_avg)
+    
 
 def create_base_dataarray(array):
     '''This function create dataarray for input array'''
