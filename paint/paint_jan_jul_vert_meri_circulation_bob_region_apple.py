@@ -179,6 +179,7 @@ def paint_jan_jul_tem_stream():
             ax2  =  ax.twinx()
             ax2.streamplot(f0.lat.data, new_level[::-1], v[month[j], ::-1], w[month[j], ::-1], color='k', linewidth=2.5,
                            density=2, arrowsize=2.75, arrowstyle='->')
+            ax2.set_yticks([])
 
             # add month name
             ax.set_title(month_name[j],loc='left',fontsize=30)
