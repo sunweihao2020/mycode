@@ -130,12 +130,14 @@ def paint_jan_jul_tem_stream():
 
     # deal with data for paint
     tem_y,v,w  =  deal_data_for_paint(tem=tem,w=w,v=v,old_level=f0.lev.data,lat=f0.lat.data,lon=f0.lon.data)
+    w *= -500  # scale the w
     new_level  =  np.linspace(1000,100,37)
 
     j = 0
 
     # select month
-    month   =  [1,2,3,4,5,6]
+    month       =  [1,2,3,4,5,6]
+    month_name  =  ["Feb","Mar","Apr","May","Jun","Jul"]
 
     for row in range(2):
         for col in range(3):
@@ -158,7 +160,7 @@ def paint_jan_jul_tem_stream():
             im  =  ax.contourf(f0.lat.data, new_level, tem_y[month[j]]*1e5,np.linspace(-2,2,21),cmap=cmap,extend='both')
 
             # plot zeros line
-            cr  =  ax.contour(f0.lat.data, new_level, tem_y[month[j]]*1e5,[0],colors='black',linewidths=3)
+            cr  =  ax.contour(f0.lat.data, new_level, tem_y[month[j]]*1e5,[0],colors='gray',linestyles='--',linewidths=3)
 
             # set range
             ax.set_xlim((-10, 30))
@@ -172,6 +174,11 @@ def paint_jan_jul_tem_stream():
             # give nan value black color
             plt.gca().set_facecolor("black")
 
+            # add streamline to picture
+            ax2  =  ax.twinx()
+            ax2.streamplot(f0.lat.data, new_level[::-1], v[month[j], ::-1], w[month[j], ::-1], color='k', linewidth=2.5,
+                           density=2, arrowsize=2.75, arrowstyle='->')
+
             j += 1
 
     fig.subplots_adjust(top=0.8)
@@ -179,7 +186,7 @@ def paint_jan_jul_tem_stream():
     cb = fig.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=25)
 
-
+    plt.savefig("/Users/sunweihao/paint/monthly_meri_vertical_tem_90to100E/Feb_to_Jul_temperature_gradient_streamline.pdf",dpi=500)
     plt.show()
 
 
