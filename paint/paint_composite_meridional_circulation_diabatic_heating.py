@@ -202,8 +202,7 @@ def paint_meridional_circulation():
 
             
             # add date
-            add_text(ax=ax, string="D" + str(dates[j]), location=(0.05, 0.91), fontsize=30)
-
+            ax.set_title("D" + str(dates[j]),loc='left',fontsize=28)
 
             j += 1
 
