@@ -8,8 +8,8 @@ metion: In the b1850 experiment, the p level for interp is different with before
 import os
 import numpy as np
 
+
 def get_FileSize(filePath):
-    filePath = unicode(filePath,'utf8')
     fsize = os.path.getsize(filePath)
     fsize = fsize/float(1024*1024)
     return round(fsize,4)
@@ -64,12 +64,15 @@ path_out =  "/home/sun/data/exp_indian_vin2p/"
 file_list  =     os.listdir(path_in)
 file_list.sort()
 
+f0_size  = get_FileSize(path_in+'b1850_tx_indian_o1_220808.cam.h1.0019-07-16-00000.nc')
+
 pnew     = np.array([1000, 975, 950, 925, 900, 875, 850, 825, 800, 775, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 225, 200, 175, 150, 125, 100, 70, 50])
 for name in file_list:
-    if "control_o1_220703.cam.h1." in name:
+    if "indian_o1_220808.cam.h1" in name:
         size  =  get_FileSize(path_in+name)
-        print("The file size is "+str(size))
-        
+        if size != f0_size:
+            print("The file size is "+str(size)+" name is "+name)
+
         out_ds  =  cesm_vin2p(path_in,name,pnew)
         out_ds.attrs["description"]  =  "indian b1850 after vin2p. 220822"
         out_ds.to_netcdf(path_out+name)
