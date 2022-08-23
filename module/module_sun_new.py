@@ -66,3 +66,7 @@ def generate_xlabel(array):
         else:
             labels.append("EQ")
     return labels
+
+def add_text(ax,string,props=dict(boxstyle='square', edgecolor='white', facecolor='white', alpha=1),location=(0.05,0.9),fontsize=15):
+    
+    ax.text(location[0],location[1],string,transform=ax.transAxes,bbox=props,fontsize=fontsize,zorder=5)

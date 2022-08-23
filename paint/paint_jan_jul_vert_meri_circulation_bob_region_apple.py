@@ -110,6 +110,7 @@ def paint_jan_jul_tem_stream():
     module_path = "/Users/sunweihao/mycode/module"
     sys.path.append(module_path)
     from module_sun_new import generate_xlabel
+    from module_sun_new import add_text
 
     # set range
     lon_slice  =  slice(90,100)
@@ -179,6 +180,9 @@ def paint_jan_jul_tem_stream():
             ax2.streamplot(f0.lat.data, new_level[::-1], v[month[j], ::-1], w[month[j], ::-1], color='k', linewidth=2.5,
                            density=2, arrowsize=2.75, arrowstyle='->')
 
+            # add month name
+            ax.set_title(month_name[j],loc='left',fontsize=30)
+
             j += 1
 
     fig.subplots_adjust(top=0.8)
@@ -186,7 +190,7 @@ def paint_jan_jul_tem_stream():
     cb = fig.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=25)
 
-    plt.savefig("/Users/sunweihao/paint/monthly_meri_vertical_tem_90to100E/Feb_to_Jul_temperature_gradient_streamline.pdf",dpi=500)
+    plt.savefig("/Users/sunweihao/paint/monthly_meri_vertical_tem_90to100E/Feb_to_Jul_temperature_gradient_streamline.png",dpi=500)
     plt.show()
 
 
