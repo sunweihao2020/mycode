@@ -1,4 +1,4 @@
-# # 2022/7/22
+# # 2022/8/22
 # # 本代码计算CESM输出文件的climate
 # # 实验是b1850_indian
 ##  Metion : if error happens, it may due to 24years. Because in the mv process it may get error
@@ -11,10 +11,10 @@ import time
 
 
 start = time.time()
-path_in  =  "/home/sun/data/exp_indian/"
-path_out =  "/home/sun/data/exp_indian_vin2p/"
+path_in  =  "/home/sun/data/exp_indian_vin2p/"
+path_out =  "/home/sun/data/model_data/climate/"
 
-year_range  =  np.array([4,55],dtype=int)
+year_range  =  np.array([1,54],dtype=int)
 
 f0  =  xr.open_dataset(path_in+'b1850_tx_indian_o1_220808.cam.h1.0019-08-26-00000.nc')
 vars  =  ["LHFLX","OMEGA","PRECT","Q","SHFLX","T","U","V","Z3","PS","TS"]
@@ -116,5 +116,5 @@ ds.lev.attrs["units"]    =      "hPa"
 
 
 
-ds.to_netcdf(path_out+"b1850_control_atmosphere.nc")
+ds.to_netcdf(path_out+"b1850_indian_atmosphere.nc")
 
