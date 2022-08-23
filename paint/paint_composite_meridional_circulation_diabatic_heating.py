@@ -183,9 +183,9 @@ def paint_meridional_circulation():
             im2 = ax.contour(f0.lat.data, new_level, new_t[j]*1e5,levels=[0],colors='gray',linewidths=4,linestyles='--')
 
             # plot stream line
-            #ax2  =  ax.twinx()
-            #ax2.streamplot(f0.lat.data, new_level[::-1], new_v[j,::-1], new_w[j,::-1], color='k',linewidth=2.5,density=2,arrowsize=2.75, arrowstyle='->')
-            #ax2.set_yticklabels([])
+            ax2  =  ax.twinx()
+            ax2.streamplot(f0.lat.data, new_level[::-1], new_v[j,::-1], new_w[j,::-1], color='k',linewidth=2.5,density=2,arrowsize=2.75, arrowstyle='->')
+            ax2.set_yticklabels([])
 
             ## diabatic heating
             im3 = ax.contour(f1.lat.data, new_level, new_s[j],levels=np.linspace(2,12,6),colors='red',linewidths=2.5)
