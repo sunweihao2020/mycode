@@ -193,7 +193,7 @@ def paint_meridional_circulation():
 #
             #im4 = ax.contour(f1.lat.data, new_level, new_l[j],levels=np.linspace(4,12,5),colors='blue',linewidths=3)
             #ax.clabel(im4,fontsize=30)
-            #ax.invert_yaxis()
+            ax.invert_yaxis()
 
             # set nan value black
             ax.set_facecolor("black")
