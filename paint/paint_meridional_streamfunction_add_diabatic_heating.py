@@ -15,7 +15,7 @@ def paint_meridional_field():
     file0  =  xr.open_dataset(src_path + f0)
     file1  =  xr.open_dataset(src_path + f1)
 
-    print(file1)
+
 
 def main():
     paint_meridional_field()
