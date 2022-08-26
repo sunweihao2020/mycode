@@ -69,7 +69,7 @@ def paint_meridional_stream():
             ax.tick_params(axis='both', labelsize=22.5)
 
             # plot streamfunction
-            im    = ax.contourf(file0.lat.data, file0.lev.data,file0.meridional_streamfunction.data[start]/1e11,levels = np.linspace(-3,3,13),cmap=newcmp,extend='both')
+            im    = ax.contourf(file0.lat.data, file0.lev.data,file0.meridional_streamfunction.data[start]/1e11,levels = np.linspace(-3,3,25),cmap=newcmp,extend='both')
 
             # set range
             ax.set_xlim((-10,30))
