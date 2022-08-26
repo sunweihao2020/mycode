@@ -46,6 +46,7 @@ def paint_meridional_field():
 
     for col in range(3):
         for row in range(3):
+            print(j)
             ax  =  fig.add_subplot(spec[row,col])
 
             # set axis ticks and label
@@ -59,7 +60,7 @@ def paint_meridional_field():
             ax.set_xlim((-10, 40))
 
             # plot streamfunction contourf
-            cf  =  ax.contourf(file1.lat.data ,file1.lev.data ,file1.meridional_streamfunction.data[dates[j]+30]/1e11, levels = np.linspace(-4,4,33),cmap=cmap,extend='both')
+            cf  =  ax.contourf(file1.lat.data ,file1.lev.data ,file1.meridional_streamfunction.data[dates[j]+30]/1e11, levels = np.linspace(-3,3,25),cmap=cmap,extend='both')
 
             # add zeros line for streamfunction
             cr  =  ax.contour(file1.lat.data ,file1.lev.data ,file1.meridional_streamfunction.data[dates[j]+30]/1e11, levels = [0], colors = "darkgray", linestyles = "--", linewidths = 4)
@@ -67,6 +68,10 @@ def paint_meridional_field():
             # add diabatic heating contour
             cr1 =  ax.contour(file0.lat.data ,file0.level.data ,latent[dates[j]+30], levels = np.linspace(2,10,5), colors = "blue", linewidths = 3)
             cr2 =  ax.contour(file0.lat.data ,file0.level.data ,sensible[dates[j]+30], levels = np.linspace(2,10,5), colors = "red", linewidths = 3)
+
+            # clabel
+            ax.clabel(cr1, fontsize=20)
+            ax.clabel(cr2, fontsize=20)
 
             # set title
             ax.set_title("D"+str(dates[j]),loc="left",fontsize = 25)
@@ -80,9 +85,14 @@ def paint_meridional_field():
             ax2.plot(topo_file.lat.data, topo / 1000, color='k')
             ax2.fill_between(topo_file.lat.data, 0, topo / 1000, where=topo > 0, color='k')
 
-
-
             ax.invert_yaxis()
+
+            # add colorbar
+            fig.subplots_adjust(top=0.9)
+            cbar_ax = fig.add_axes([0.2, 0.05, 0.6, 0.03])
+            cb = fig.colorbar(cf, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
+            cb.ax.tick_params(labelsize=25)
+
             j += 1
 
     plt.savefig("/Users/sunweihao/paint/circulation_based_on_composite_result/meridional_streamfunction_diabatic_heating_90to100E.png",dpi=500)
@@ -92,6 +102,8 @@ def paint_meridional_field():
 
 
 def main():
+    import warnings
+    warnings.filterwarnings("ignore")  # close warning message
     paint_meridional_field()
 
 if __name__ == "__main__":
