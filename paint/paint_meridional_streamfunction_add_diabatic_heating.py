@@ -200,6 +200,7 @@ def main():
     import warnings
     warnings.filterwarnings("ignore")  # close warning message
     paint_zonal_field()
+    paint_meridional_field()
 
 if __name__ == "__main__":
     main()
