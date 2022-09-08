@@ -60,7 +60,7 @@ def paint_meridional_field():
             ax.set_xlim((-10, 40))
 
             # plot streamfunction contourf
-            cf  =  ax.contourf(file1.lat.data ,file1.lev.data ,file1.meridional_streamfunction.data[dates[j]+30]/1e11, levels = np.linspace(-3,3,25),cmap=cmap,extend='both')
+            cf  =  ax.contourf(file1.lat.data ,file1.lev.data ,file1.meridional_streamfunction.data[dates[j]+30]/1e11, levels = np.linspace(-3,3,13),cmap=cmap,extend='both')
 
             # add zeros line for streamfunction
             cr  =  ax.contour(file1.lat.data ,file1.lev.data ,file1.meridional_streamfunction.data[dates[j]+30]/1e11, levels = [0], colors = "darkgray", linestyles = "--", linewidths = 4)
@@ -150,7 +150,7 @@ def paint_zonal_field():
             ax.set_xlim((50, 120))
 
             # plot streamfunction contourf
-            cf  =  ax.contourf(file1.lon.data ,file1.lev.data ,file1.zonal_streamfunction.data[dates[j]+30]/1e11, levels = np.linspace(-4,4,33),cmap=cmap,extend='both')
+            cf  =  ax.contourf(file1.lon.data ,file1.lev.data ,file1.zonal_streamfunction.data[dates[j]+30]/1e11, levels = np.linspace(-4,4,17),cmap=cmap,extend='both')
 
             # add zeros line for streamfunction
             cr  =  ax.contour(file1.lon.data ,file1.lev.data ,file1.zonal_streamfunction.data[dates[j]+30]/1e11, levels = [0], colors = "darkgray", linestyles = "--", linewidths = 4)
