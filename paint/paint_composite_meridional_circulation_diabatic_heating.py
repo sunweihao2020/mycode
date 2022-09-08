@@ -188,11 +188,11 @@ def paint_meridional_circulation():
             ax2.set_yticklabels([])
 
             ## diabatic heating
-            im3 = ax.contour(f1.lat.data, new_level, new_s[j],levels=np.linspace(2,12,6),colors='red',linewidths=2.5)
-            ax.clabel(im3,fontsize=30)
-
-            im4 = ax.contour(f1.lat.data, new_level, new_l[j],levels=np.linspace(4,12,5),colors='blue',linewidths=3)
-            ax.clabel(im4,fontsize=30)
+            #im3 = ax.contour(f1.lat.data, new_level, new_s[j],levels=np.linspace(2,12,6),colors='red',linewidths=2.5)
+            #ax.clabel(im3,fontsize=30)
+#
+            #im4 = ax.contour(f1.lat.data, new_level, new_l[j],levels=np.linspace(4,12,5),colors='blue',linewidths=3)
+            #ax.clabel(im4,fontsize=30)
             ax.invert_yaxis()
 
             # set nan value black
@@ -216,7 +216,7 @@ def paint_meridional_circulation():
 
 
     plt_path  =  "/home/sun/paint/circulation_based_on_composite_result/"
-    plt.savefig(plt_path+"composite_meri_vert_circulation_90to100_temp_heating.pdf", dpi=400)
+    plt.savefig(plt_path+"composite_meri_vert_circulation_90to100_temp_gradient.pdf", dpi=400)
 
     plt.show()
 
