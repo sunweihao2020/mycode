@@ -19,6 +19,28 @@ var_two   =  ['hfsso', 'rlntds', 'rsntds', 'hfds']          # coordinate all is 
 
 file_all  =  os.listdir(src_path)
 
+def create_new_lon():
+    '''This function create new lon data'''
+    import xarray as xr
+    f0  =  xr.open_dataset(src_path + 'b1850_tx_maritime_o2_220807.mom6.sfc_0005.nc')
+
+    old_xh   =  f0['xh'].data
+    old_xq   =  f0['xq'].data
+
+    old_xh2  =  old_xh + 360
+    old_xq2  =  old_xq + 360
+
+    new_xh   =  old_xh.copy()
+    new_xq   =  old_xq.copy()
+
+    new_xh[:110]  =  old_xh[430:]
+    new_xh[110:]  =  old_xh2[:430]
+
+    new_xq[:110]  =  old_xq[430:]
+    new_xq[110:]  =  old_xq2[:430]
+
+    return new_xh,new_xq
+
 def transfer_lon(filename,varname):
     '''This function transfer the longitude for the input file'''
     import xarray as xr
@@ -44,13 +66,15 @@ def transfer_lon(filename,varname):
 
     return var_new
 
-def deal_maritime():
+def deal_indian():
     '''In this function I deal with control exp ocean data'''
     import os
     import xarray as xr
 
     exp_name   =   ['b1850_tx_indian_o1_220808']
     os.system('rm -rf ' + end_path + '*nc')
+
+    new_xh,new_xq  =  create_new_lon()
 
     for nnnn in range(len(exp_name)):
         namelist1  =  [] ; namelist2  =  []
@@ -62,7 +86,7 @@ def deal_maritime():
                 namelist2.append(ffff)
         namelist1.sort() ; namelist2.sort()
 
-        print("Now it is dealing with {}, the exp name is {}".format(ocn_one,'control'))
+        print("Now it is dealing with {}, the exp name is {}".format(ocn_one,'indian'))
 
     
 
@@ -75,6 +99,10 @@ def deal_maritime():
 
             # create new name
             len1  =  len(exp_name[nnnn]) + len('.mom6.hm_')
+
+            # change xh coordinate
+            f0  =  f0.assign_coords(xh=new_xh)
+
 
 
             new_name  =  experiment_name + 'hm_' + ffff[len1:len1+7] + '.nc'
@@ -93,6 +121,11 @@ def deal_maritime():
             # create new name
             len1  =  len(exp_name[nnnn]) + len('.mom6.sfc_')
 
+            # change xh coordinate
+            f0  =  f0.assign_coords(xh=new_xh)
+            f0  =  f0.assign_coords(xq=new_xq)
+
+
 
             new_name  =  experiment_name + 'sfc_' + ffff[len1:len1+7] + '.nc'
 
@@ -106,7 +139,7 @@ def main():
 
 
 
-    deal_maritime()
+    deal_indian()
     
 if __name__ == '__main__':
     main()
