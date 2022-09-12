@@ -4,7 +4,7 @@ This code is to paint meridional streamfunction add diabatic heating
 zonal range is 90 to 100
 Dr Wu say my color map is bad, this script is in order to change colormap
 '''
-src_path  =  "/Users/sunweihao/data/composite/"
+src_path  =  "/home/sun/data/composite/"
 
 f0        =  "composite-heating-merra.nc"
 f1        =  "composite_calculate_regional_streamfunction_zonal10to20_meridional_220825.nc"
@@ -16,7 +16,7 @@ def paint_meridional_field():
     import cmasher as cmr
 
     import sys
-    sys.path.append("/Users/sunweihao/mycode/module")
+    sys.path.append("/home/sun/mycode/module/")
     from module_sun_new import generate_xlabel
 
     # calculate zonal average for the diabatic heating
@@ -24,7 +24,7 @@ def paint_meridional_field():
     file0  =  xr.open_dataset(src_path + f0).sel(lon=lon_slice)
     file1  =  xr.open_dataset(src_path + f1)
 
-    topo_file  =  xr.open_dataset("/Users/sunweihao/data/topography/bathymetric.nc").sel(lon=lon_slice)
+    topo_file  =  xr.open_dataset("/home/sun/data/topography/bathymetric.nc").sel(lon=lon_slice)
     topo       =  np.average(topo_file.elevation,axis=1)
 
 
@@ -96,7 +96,7 @@ def paint_meridional_field():
 
             j += 1
 
-    plt.savefig("/Users/sunweihao/paint/circulation_based_on_composite_result/meridional_streamfunction_diabatic_heating_90to100E.png",dpi=500)
+    plt.savefig("/home/sun/paint/circulation_based_on_composite_result/meridional_streamfunction_diabatic_heating_90to100E.png",dpi=500)
     plt.show()
 
 def paint_zonal_field():
@@ -107,7 +107,7 @@ def paint_zonal_field():
     import cmasher as cmr
 
     import sys
-    sys.path.append("/Users/sunweihao/mycode/module")
+    sys.path.append("/home/sun/mycode/module/")
     from module_sun_new import generate_xlabel
 
     # set meridional range for diabatic heating
@@ -116,7 +116,7 @@ def paint_zonal_field():
     file0 = xr.open_dataset(src_path + f0).sel(lat=lat_slice)
     file1 = xr.open_dataset(src_path + f1)
 
-    topo_file = xr.open_dataset("/Users/sunweihao/data/topography/bathymetric.nc").sel(lat=lat_slice)
+    topo_file = xr.open_dataset("/home/sun/data/topography/bathymetric.nc").sel(lat=lat_slice)
     topo = np.average(topo_file.elevation, axis=0)
 
     latent = np.nanmean(file0.moist, axis=2)
@@ -186,7 +186,7 @@ def paint_zonal_field():
 
             j += 1
 
-    plt.savefig("/Users/sunweihao/paint/circulation_based_on_composite_result/zonal_streamfunction_diabatic_heating_10to20E.png",dpi=500)
+    plt.savefig("/home/sun/paint/circulation_based_on_composite_result/zonal_streamfunction_diabatic_heating_10to20E.png",dpi=500)
 
 
 def generate_xlabel_lon(array):

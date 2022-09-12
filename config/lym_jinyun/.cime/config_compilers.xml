@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config_compilers version="2.0">
+<compiler COMPILER="intel" MACH="oneapi">
+  <CFLAGS>
+    <base>  -qno-opt-dynamic-align -fp-model precise -std=gnu99 </base>
+    <append compile_threaded="TRUE"> -qopenmp </append>
+    <append DEBUG="FALSE"> -O2 -debug minimal </append>
+    <append DEBUG="TRUE"> -O0 -g </append>
+  </CFLAGS>
+  <CPPDEFS>
+    <!-- http://software.intel.com/en-us/articles/intel-composer-xe/ -->
+    <append> -DFORTRANUNDERSCORE -DCPRINTEL</append>
+  </CPPDEFS>
+  <CXX_LDFLAGS>
+    <base> -cxxlib </base>
+  </CXX_LDFLAGS>
+  <CXX_LINKER>FORTRAN</CXX_LINKER>
+  <FC_AUTO_R8>
+    <base> -r8 </base>
+  </FC_AUTO_R8>
+  <FFLAGS>
+    <base> -qno-opt-dynamic-align  -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source  </base>
+    <append compile_threaded="TRUE"> -qopenmp </append>
+    <append DEBUG="TRUE"> -O0 -g -check uninit -check bounds -check pointers -fpe0 -check noarg_temp_created </append>
+    <append DEBUG="FALSE"> -O2 -debug minimal </append>
+  </FFLAGS>
+  <FFLAGS_NOOPT>
+    <base> -O0 </base>
+  </FFLAGS_NOOPT>
+  <FIXEDFLAGS>
+    <base> -fixed  </base>
+  </FIXEDFLAGS>
+  <FREEFLAGS>
+    <base> -free </base>
+  </FREEFLAGS>
+  <LDFLAGS>
+    <append compile_threaded="TRUE"> -qopenmp </append>
+    <append> -qmkl </append>
+  </LDFLAGS>
+  <MPICC> mpiicc  </MPICC>
+  <MPICXX> mpicpc </MPICXX>
+  <MPIFC> mpiifort </MPIFC>
+  <SCC> icc </SCC>
+  <SCXX> icpc </SCXX>
+  <SFC> ifort </SFC>
+  <MPI_PATH>/public1/home/lym/intel/oneapi/mpi/2021.6.0</MPI_PATH>
+  <SLIBS>
+    <append> -L/public1/home/lym/swh/app/oneapi/netcdf4/lib -lnetcdff -lnetcdf </append>
+  </SLIBS>
+  <SUPPORTS_CXX>TRUE</SUPPORTS_CXX>
+</compiler>
+</config_compilers>
