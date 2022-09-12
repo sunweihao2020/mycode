@@ -1,7 +1,8 @@
 '''
-2022-8-25
+2022-9-12
 This code is to paint meridional streamfunction add diabatic heating
 zonal range is 90 to 100
+Dr Wu say my color map is bad, this script is in order to change colormap
 '''
 src_path  =  "/Users/sunweihao/data/composite/"
 

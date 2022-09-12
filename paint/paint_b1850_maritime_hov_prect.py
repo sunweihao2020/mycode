@@ -42,7 +42,7 @@ y_label = ['10Apr','20Apr','30Apr','10May','20May','30May','10Jun','20Jun','30Ju
 def lon_avg_prect(time_slice=slice(100,201),lat_slice=slice(10,20),lon_slice=slice(65,130)):
     '''This function deal with precipitation data'''
     # model result
-    control_prect   =  xr.open_dataset("/home/sun/data/model_data/climate/b1850_maritime_atmosphere.nc").sel(time=time_slice,lev=925,lat = lat_slice,lon = lon_slice)
+    control_prect   =  xr.open_dataset("/home/sun/data/model_data/climate/b1850_maritime_climate_atmosphere.nc").sel(time=time_slice,lev=925,lat = lat_slice,lon = lon_slice)
 
     # calculate weight average
     avg_control_prect  =  (control_prect["PRECT"]*(np.cos(np.deg2rad(control_prect.lat.values)))[None, :, None]).sum(dim='lat')/np.sum(np.cos(np.deg2rad(control_prect.lat.values)))*86400*1000
@@ -52,7 +52,7 @@ def lon_avg_prect(time_slice=slice(100,201),lat_slice=slice(10,20),lon_slice=sli
 
 def paint_trmm_hov(control,path_out,filename,time_slice=slice(100,201),lat_slice=slice(10,20),lon_slice=slice(65,130)):
     '''This function paint control prect with map'''
-    f0  =  xr.open_dataset("/home/sun/data/model_data/climate/b1850_maritime_atmosphere.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
+    f0  =  xr.open_dataset("/home/sun/data/model_data/climate/b1850_maritime_climate_atmosphere.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
     # Start figure
     fig = plt.figure(figsize=(13, 15))
     gs = gridspec.GridSpec(nrows=2, ncols=1, height_ratios=[2, 6], hspace=0.03)
