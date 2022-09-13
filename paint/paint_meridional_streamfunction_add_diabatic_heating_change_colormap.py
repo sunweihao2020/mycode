@@ -9,6 +9,21 @@ src_path  =  "/home/sun/data/composite/"
 f0        =  "composite-heating-merra.nc"
 f1        =  "composite_calculate_regional_streamfunction_zonal10to20_meridional_220825.nc"
 
+def test_cmp():
+    import cmasher as cmr
+    import matplotlib.pyplot as plt
+    from matplotlib import cm
+    from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+    cmap      =  cmr.waterlily
+
+    cmap2     =  plt.get_cmap('cmr.waterlily',20)
+
+    
+    cmap2.colors[9]  =  0
+    cmap2.colors[10]  =  0
+
+    return cmap2
+
 def paint_meridional_field():
     import xarray as xr
     import numpy as np
@@ -34,20 +49,19 @@ def paint_meridional_field():
 
     # ----------Now paint---------------------
     # set dates
-    dates     =  [-30,-20,-10,-5,-3,-1,0,2,4]
+    dates     =  [-30,-20,-10,-5,-3,-2,-1,0,2]
 
     # set figure
     fig       =  plt.figure(figsize=(34,30))
     spec      =  fig.add_gridspec(nrows=3, ncols=3)
 
     # set cmap
-    cmap      =  cmr.waterlily
+    cmap      =  test_cmp()
 
     j         =  0
 
     for col in range(3):
         for row in range(3):
-            print(j)
             ax  =  fig.add_subplot(spec[row,col])
 
             # set axis ticks and label
@@ -61,7 +75,7 @@ def paint_meridional_field():
             ax.set_xlim((-10, 40))
 
             # plot streamfunction contourf
-            cf  =  ax.contourf(file1.lat.data ,file1.lev.data ,file1.meridional_streamfunction.data[dates[j]+30]/1e11, levels = np.linspace(-3,3,13),cmap=cmap,extend='both')
+            cf  =  ax.contourf(file1.lat.data ,file1.lev.data ,file1.meridional_streamfunction.data[dates[j]+30]/1e11, levels = np.linspace(-3,3,25),cmap=cmap,extend='both')
 
             # add zeros line for streamfunction
             cr  =  ax.contour(file1.lat.data ,file1.lev.data ,file1.meridional_streamfunction.data[dates[j]+30]/1e11, levels = [0], colors = "darkgray", linestyles = "--", linewidths = 4)
@@ -124,20 +138,19 @@ def paint_zonal_field():
 
     # ----------Now paint---------------------
     # set dates
-    dates = [-30, -20, -10, -5, -3, -1, 0, 2, 4]
+    dates     =  [-30,-20,-10,-5,-3,-2,-1,0,2]
 
     # set figure
     fig = plt.figure(figsize=(34, 30))
     spec = fig.add_gridspec(nrows=3, ncols=3)
 
     # set cmap
-    cmap = cmr.waterlily
+    cmap      =  test_cmp()
 
     j = 0
 
     for col in range(3):
         for row in range(3):
-            print(j)
             ax  =  fig.add_subplot(spec[row,col])
 
             # set axis ticks and label
@@ -202,6 +215,7 @@ def main():
     warnings.filterwarnings("ignore")  # close warning message
     paint_zonal_field()
     paint_meridional_field()
+    #test_cmp()
 
 if __name__ == "__main__":
     main()
