@@ -29,7 +29,7 @@ newcmp = ListedColormap(newcolors)
 newcmp.set_under('white')
 newcmp.set_over('#19345e')
 #levels
-clevs = np.arange(3,20,1)
+clevs = np.arange(3,26,2)
 # Tick labels
 x_tick_labels = []
 for xx in range(70,131,20):
@@ -42,7 +42,7 @@ y_label = ['10Apr','20Apr','30Apr','10May','20May','30May','10Jun','20Jun','30Ju
 def lon_avg_prect(time_slice=slice(100,201),lat_slice=slice(10,20),lon_slice=slice(65,130)):
     '''This function deal with precipitation data'''
     # model result
-    control_prect   =  xr.open_dataset("/home/sun/data/model_data/climate/b1850_control_climate_atmosphere.nc").sel(time=time_slice,lev=925,lat = lat_slice,lon = lon_slice)
+    control_prect   =  xr.open_dataset("/home/sun/data/model_data/climate/b1850_indian_climate_atmosphere3.nc").sel(time=time_slice,lev=925,lat = lat_slice,lon = lon_slice)
 
     # calculate weight average
     avg_control_prect  =  (control_prect["PRECT"]*(np.cos(np.deg2rad(control_prect.lat.values)))[None, :, None]).sum(dim='lat')/np.sum(np.cos(np.deg2rad(control_prect.lat.values)))*86400*1000
@@ -93,7 +93,7 @@ def paint_trmm_hov(control,path_out,filename,time_slice=slice(100,201),lat_slice
 
 def main():
     control = lon_avg_prect()
-    paint_trmm_hov(control,path_out="/home/sun/paint/b1850_exp/",filename="b1850_control_hov_prect.pdf")
+    paint_trmm_hov(control,path_out="/home/sun/paint/b1850_exp/",filename="b1850_indian_hov_prect.pdf")
 
 
 if __name__ == "__main__":
