@@ -1,8 +1,10 @@
 '''
-2022-5-3
+2022-9-17
 本代码绘制论文version3.0中的fig8
 内容为:1. 三种越赤道气流的全年变化 2.模式与观测的对比
 出版标准
+
+数据替换为耦合实验b1850
 '''
 import sys
 import xarray as xr
@@ -18,13 +20,12 @@ import math
 
 sys.path.append("/home/sun/mycode/paint/")
 from paint_lunwen_version3_0_fig2b_2m_tem_wind_20220426 import save_fig,set_cartopy_tick
-from paint_lunwen_version3_0_fig2a_tem_gradient_20220426 import add_text
-#from paint_lunwen_version3_0_fig1_bob_onset_seris import set_pic_ticks
+
 
 class data_resolve:
     '''数据处理方面函数,最终结果是生成了nc文件'''
-    file_name  =  "/home/sun/data/pentad_cross_jet_bobprect_filted_20220503.nc"
-
+    end_path   =  '/home/sun/data/composite/' 
+    file_name  =  'pentad_cross_jet_bobprect_filted.nc'
 
     def year_composite(lat,lon,path,var,time=365,lev=None):
         '''
@@ -84,24 +85,25 @@ class data_resolve:
 
         return average_data
 
-    def deal_data_average_climate(cv1=5,prect_lat=(10,25)):
+    def deal_data_average_climate(cv1=5,prect_lat=(10,25),level=[925]):
         '''deal with climate average data for wind and precipitation
         cv1:filter index
         '''
-        path  =  "/home/sun/data/merra2_multi/"
+        path  =  "/home/sun/wd_disk/merra2_multi_climate/"
         f0    =  xr.open_dataset(path+"0707.climate.nc")
 
         # joint wind data
-        u  =  year_composite(f0.lat.data,f0.lon.data,path,var="U",lev=[925])
-        v  =  year_composite(f0.lat.data,f0.lon.data,path,var="V",lev=[925])
+        u  =  data_resolve.year_composite(f0.lat.data,f0.lon.data,path,var="U",lev=level)
+        v  =  data_resolve.year_composite(f0.lat.data,f0.lon.data,path,var="V",lev=level)
 
         # read precpitation
-        f2 =  xr.open_dataset("/home/sun/data/gpcp_prect_365_climate.nc")
+        path1  =  '/home/sun/data/composite/'
+        f2 =  xr.open_dataset(path1 + "gpcp_prect_365_climate.nc")
 
         # calculate pentad average
-        u_pentad  =  cal_pentad(u)
-        v_pentad  =  cal_pentad(v)
-        prect_pentad  =  cal_pentad(f2.prect.data) # interchange the axes
+        u_pentad      =  data_resolve.cal_pentad(u)
+        v_pentad      =  data_resolve.cal_pentad(v)
+        prect_pentad  =  data_resolve.cal_pentad(f2.prect.data) # interchange the axes
 
         # data integration
         ncfile     =xr.Dataset(
@@ -121,12 +123,12 @@ class data_resolve:
 
         # calculate regional average cross jet
         cross_equator  =  np.zeros((2,73))
-        cross_equator[0]  =  cal_regional_average(ncfile.v.sel(wind_lat=slice(-5,5),wind_lon=slice(50,60)))
-        cross_equator[1]  =  cal_regional_average(ncfile.v.sel(wind_lat=slice(-5,5),wind_lon=slice(80,90)))
+        cross_equator[0]  =  data_resolve.cal_regional_average(ncfile.v.sel(wind_lat=slice(-5,5),wind_lon=slice(50,60)))
+        cross_equator[1]  =  data_resolve.cal_regional_average(ncfile.v.sel(wind_lat=slice(-5,5),wind_lon=slice(80,90)))
 
         # calculate regional average precipitation in BOB
         ncfile.prect.data[ncfile.prect.data>100]  =  0  # ignore nan
-        bob_prect  =  cal_regional_average(ncfile.prect.sel(prect_lat=slice(prect_lat[0],prect_lat[1]),prect_lon=slice(90,100)))
+        bob_prect  =  data_resolve.cal_regional_average(ncfile.prect.sel(prect_lat=slice(prect_lat[0],prect_lat[1]),prect_lon=slice(90,100)))
 
         # filter data
         filter_data  =  np.zeros((3,73),dtype=np.float32) # first two is cross eq index, third is precipitation
@@ -139,13 +141,13 @@ class data_resolve:
     def joint_anomaly_prect():
         '''早晚年的降水数据都是按日排列的，这里给组装起来'''
         import os.path
-        if os.path.isfile("/home/sun/data/gpcp_anomaly_prect_220503.nc") == False:
+        if os.path.isfile("/home/sun/data/composite/gpcp_anomaly_prect_365_times.nc") == False:
             path1  =  "/home/sun/qomo-data/year_mean/gpcp_97_19_early/"
             path2  =  "/home/sun/qomo-data/year_mean/gpcp_97_19_late/"
             f      =  xr.open_dataset(path1+"early_gpcp_0722.climate.nc")
             # 连接
-            prect_early  =  year_composite(f.lat.data,f.lon.data,path1,var="precip")
-            prect_late   =  year_composite(f.lat.data,f.lon.data,path2,var="precip")
+            prect_early  =  data_resolve.year_composite(f.lat.data,f.lon.data,path1,var="precip")
+            prect_late   =  data_resolve.year_composite(f.lat.data,f.lon.data,path2,var="precip")
 
             # 存储
             ncfile     =xr.Dataset(
@@ -159,11 +161,12 @@ class data_resolve:
                 "time": (["time"], np.linspace(1,365,365)),
             },
             )
-            ncfile.to_netcdf("/home/sun/data/gpcp_anomaly_prect_220503.nc")
+            ncfile.attrs['description']  =  'Combine the 365 files to one file includes anamoly years precipitation'
+            ncfile.to_netcdf("/home/sun/data/composite/gpcp_anomaly_prect_365_times.nc")
 
-            file  =  xr.open_dataset("/home/sun/data/gpcp_anomaly_prect_220503.nc")
+            file  =  xr.open_dataset("/home/sun/data/composite/gpcp_anomaly_prect_365_times.nc")
         else:
-            file  =  xr.open_dataset("/home/sun/data/gpcp_anomaly_prect_220503.nc")
+            file  =  xr.open_dataset("/home/sun/data/composite/gpcp_anomaly_prect_365_times.nc")
 
         return file
 
@@ -176,19 +179,19 @@ class data_resolve:
         f1    =  xr.open_dataset(path3+"early_gpcp_0722.climate.nc")
 
         # joint wind and precipitation data
-        u_early  =  year_composite(f0.lat.data,f0.lon.data,path1,var="U",lev=[925])
-        u_late   =  year_composite(f0.lat.data,f0.lon.data,path2,var="U",lev=[925])
-        v_early  =  year_composite(f0.lat.data,f0.lon.data,path1,var="V",lev=[925])
-        v_late   =  year_composite(f0.lat.data,f0.lon.data,path2,var="V",lev=[925])
-        prect    =  joint_anomaly_prect()  # get the 365 seris anomaly precipitation in early and late year
+        u_early  =  data_resolve.year_composite(f0.lat.data,f0.lon.data,path1,var="U",lev=[925])
+        u_late   =  data_resolve.year_composite(f0.lat.data,f0.lon.data,path2,var="U",lev=[925])
+        v_early  =  data_resolve.year_composite(f0.lat.data,f0.lon.data,path1,var="V",lev=[925])
+        v_late   =  data_resolve.year_composite(f0.lat.data,f0.lon.data,path2,var="V",lev=[925])
+        prect    =  data_resolve.joint_anomaly_prect()  # get the 365 seris anomaly precipitation in early and late year
 
         # calculate pentad average
-        u_pentad_early  =  cal_pentad(u_early)
-        v_pentad_early  =  cal_pentad(v_early)
-        u_pentad_late   =  cal_pentad(u_late)
-        v_pentad_late   =  cal_pentad(v_late)
-        prect_pentad_early   =  cal_pentad(prect.prect_early.data)
-        prect_pentad_late    =  cal_pentad(prect.prect_late.data)
+        u_pentad_early  =  data_resolve.cal_pentad(u_early)
+        v_pentad_early  =  data_resolve.cal_pentad(v_early)
+        u_pentad_late   =  data_resolve.cal_pentad(u_late)
+        v_pentad_late   =  data_resolve.cal_pentad(v_late)
+        prect_pentad_early   =  data_resolve.cal_pentad(prect.prect_early.data)
+        prect_pentad_late    =  data_resolve.cal_pentad(prect.prect_late.data)
 
         # data integration
         ncfile     =xr.Dataset(
@@ -211,18 +214,18 @@ class data_resolve:
 
         # calculate regional average cross jet
         cross_equator_early  =  np.zeros((2,73))
-        cross_equator_early[0]  =  cal_regional_average(ncfile.v_early.sel(wind_lat=slice(-5,5),wind_lon=slice(50,60)))
-        cross_equator_early[1]  =  cal_regional_average(ncfile.v_early.sel(wind_lat=slice(-5,5),wind_lon=slice(80,90)))
+        cross_equator_early[0]  =  data_resolve.cal_regional_average(ncfile.v_early.sel(wind_lat=slice(-5,5),wind_lon=slice(50,60)))
+        cross_equator_early[1]  =  data_resolve.cal_regional_average(ncfile.v_early.sel(wind_lat=slice(-5,5),wind_lon=slice(80,90)))
 
         cross_equator_late   =  np.zeros((2,73))
-        cross_equator_late[0]  =  cal_regional_average(ncfile.v_late.sel(wind_lat=slice(-5,5),wind_lon=slice(50,60)))
-        cross_equator_late[1]  =  cal_regional_average(ncfile.v_late.sel(wind_lat=slice(-5,5),wind_lon=slice(80,90)))
+        cross_equator_late[0]  =  data_resolve.cal_regional_average(ncfile.v_late.sel(wind_lat=slice(-5,5),wind_lon=slice(50,60)))
+        cross_equator_late[1]  =  data_resolve.cal_regional_average(ncfile.v_late.sel(wind_lat=slice(-5,5),wind_lon=slice(80,90)))
 
         # calculate regional average precipitation in BOB
         ncfile.prect_early.data[ncfile.prect_early.data>100]  =  0  # ignore nan
-        bob_prect_early  =  cal_regional_average(ncfile.prect_early.sel(prect_lat=slice(prect_lat[0],prect_lat[1]),prect_lon=slice(90,100)))
+        bob_prect_early  =  data_resolve.cal_regional_average(ncfile.prect_early.sel(prect_lat=slice(prect_lat[0],prect_lat[1]),prect_lon=slice(90,100)))
         ncfile.prect_late.data[ncfile.prect_late.data>100]    =  0  # ignore nan
-        bob_prect_late   =  cal_regional_average(ncfile.prect_late.sel(prect_lat=slice(prect_lat[0],prect_lat[1]),prect_lon=slice(90,100)))
+        bob_prect_late   =  data_resolve.cal_regional_average(ncfile.prect_late.sel(prect_lat=slice(prect_lat[0],prect_lat[1]),prect_lon=slice(90,100)))
 
         # filter data
         filter_data_early     =  np.zeros((3,73),dtype=np.float32) # first two is cross eq index, third is precipitation
@@ -241,8 +244,8 @@ class data_resolve:
         内容为，气候态及早晚年的两股越赤道气流 + bob地区降水
         数据进行了5点滑动平均
         '''
-        average_data  =  deal_data_average_climate()
-        early_data,late_data = deal_data_average_anamoly()
+        average_data         =  data_resolve.deal_data_average_climate()
+        early_data,late_data =  data_resolve.deal_data_average_anamoly()
 
         # data integration
         ncfile     =xr.Dataset(
@@ -257,9 +260,9 @@ class data_resolve:
             },
         )
         ncfile.attrs["description"]  =  "this file is calculated for lunwen, which is two cross equator stream and bob regional precipitation. all data has been moving average using 5 points"
-        ncfile.attrs["date"]  =  "2022-5-3"
+        ncfile.attrs["date"]  =  "2022-9-18"
 
-        ncfile.to_netcdf("/home/sun/data/pentad_cross_jet_bobprect_filted_20220503.nc")
+        ncfile.to_netcdf("/home/sun/data/composite/pentad_cross_jet_bobprect_filted.nc")
 
     def cal_geo_force(path,filename):
         '''本代码计算cesm2实验中的气压梯度力'''
@@ -281,15 +284,15 @@ class data_resolve:
         # 判断文件是否存在
         from pathlib import Path
 
-        result_file  =  "/home/sun/model_output/model_result_deal/geopotential_height_gradient_con_id.nc"
+        result_file  =  "/home/sun/data/model_data/process/geopotential_height_gradient_con_id_b1850.nc"
         check_name   =  Path(result_file)
         if check_name.is_file() == False:
             # 指定的文件存在
-            geo_force_con = data_resolve.cal_geo_force(path="/home/sun/model_output/control_220416_vin2p/atm/average/",filename="control_220416_climate.nc")
-            geo_force_id  = data_resolve.cal_geo_force(path="/home/sun/model_output/replace_indian_vin2p/average/",filename="replace_indian_climate.nc")
+            geo_force_con = data_resolve.cal_geo_force(path="/home/sun/data/model_data/climate/",filename="b1850_control_atmosphere.nc")
+            geo_force_id  = data_resolve.cal_geo_force(path="/home/sun/data/model_data/climate/",filename="b1850_indian_climate_atmosphere3.nc")
 
             # 存储数据
-            f0      =  xr.open_dataset("/home/sun/model_output/control_220416_vin2p/atm/average/control_220416_climate.nc")
+            f0      =  xr.open_dataset("/home/sun/data/model_data/climate/b1850_control_atmosphere.nc")
             ncfile  =  xr.Dataset(
                 {
                     "gradient_y_con": (["time", "lev", "lat", "lon"], geo_force_con),
@@ -310,11 +313,11 @@ class data_resolve:
 
             #file  =  xr.open_dataset(result_file).sel(lev=925,time=slice(90,120),lat=slice(-10,30),lon=slice(40,120))  # 这里提前选好范围了
 
-    def model_cross_index(prect_lat=(10,25)):
+    def model_cross_index(prect_lat=(10,20)):
         '''处理模式控制实验和敏感性实验的越赤道气流对比数据'''
         lev  =  925
-        f1   =  xr.open_dataset("/home/sun/model_output/control_220416_vin2p/atm/average/control_220416_climate.nc").sel(lev=lev)
-        f2   =  xr.open_dataset("/home/sun/model_output/replace_indian_vin2p/average/replace_indian_climate.nc").sel(lev=lev)
+        f1   =  xr.open_dataset("/home/sun/data/model_data/climate/b1850_control_atmosphere.nc").sel(lev=lev)
+        f2   =  xr.open_dataset("/home/sun/data/model_data/climate/b1850_indian_climate_atmosphere3.nc").sel(lev=lev)
 
         # 计算区域平均
         prect_con  =  data_resolve.cal_regional_average(f1.sel(lat=slice(prect_lat[0],prect_lat[1]),lon=slice(90,100)).PRECT)
@@ -396,7 +399,7 @@ def paint_pic_cross(somali,bob,prect,path_out,filename,date):
 def paint_geo_force():
     '''本函数绘制一张图，即控制实验和敏感性实验之间的气压梯度力差值，这里选用四月的平均'''
     # 读取文件
-    result_file  =  "/home/sun/model_output/model_result_deal/geopotential_height_gradient_con_id.nc"
+    result_file  =  "/home/sun/data/model_data/process/geopotential_height_gradient_con_id_b1850.nc"
     f0  =  xr.open_dataset(result_file).sel(lev=925,time=slice(90,120),lat=slice(-10,35),lon=slice(40,120))
 
     # 绘制图像
@@ -413,7 +416,7 @@ def paint_geo_force():
     ax.plot([40,120],[0,0],'--',color='k')
 
     # 绘制气温等值线
-    im  =  ax.contourf(f0.lon,f0.lat,-1e6*(np.average(f0.gradient_y_id,axis=0)-np.average(f0.gradient_y_con,axis=0)),np.linspace(-200,200,21),cmap=create_ncl_colormap("/home/sun/data/color_rgb/GMT_polar.txt",20),alpha=1,extend='both')
+    im  =  ax.contourf(f0.lon,f0.lat,-1e6*(np.average(f0.gradient_y_id,axis=0)-np.average(f0.gradient_y_con,axis=0)),np.linspace(-300,300,21),cmap=create_ncl_colormap("/home/sun/data/color_rgb/GMT_polar.txt",20),alpha=1,extend='both')
     # 绘制海岸线
     ax.coastlines(resolution='110m',lw=1)
 
@@ -424,7 +427,7 @@ def paint_geo_force():
     a = fig.colorbar(im,shrink=0.6, pad=0.05,orientation='horizontal')
     a.ax.tick_params(labelsize=15)
     # 保存图片
-    save_fig(path_out="/home/sun/paint/lunwen/version3.0/",file_out="lunwen_fig8e_v3.0_geo_deff.pdf")
+    save_fig(path_out="/home/sun/paint/lunwen/version4.0/",file_out="lunwen_fig10_v4.0_geo_deff.pdf")
     
 def paint_cross_model(con_cross,noid_cross,con_prect,noid_prect,path_out,filename,cv1=5,date1=15,date2=30):
     '''绘制图片，这里不同年份的分开画'''
@@ -457,17 +460,19 @@ def paint_cross_model(con_cross,noid_cross,con_prect,noid_prect,path_out,filenam
 def main():
     start = time.time()
 
-    # 读取文件
-    file  =  xr.open_dataset(data_resolve.file_name)
-
-    paint_pic_cross(somali=file.climate.data[0],bob=file.climate.data[1],prect=file.climate.data[2],path_out="/home/sun/paint/lunwen/version3.0/",filename="lunwen_fig8_v3.0_climate_cross_prect_pentad.pdf",date=25)
-    paint_pic_cross(somali=file.early.data[0],bob=file.early.data[1],prect=file.early.data[2],path_out="/home/sun/paint/lunwen/version3.0/",filename="lunwen_fig8_v3.0_early_cross_prect_pentad.pdf",date=21)
-    paint_pic_cross(somali=file.late.data[0],bob=file.late.data[1],prect=file.late.data[2],path_out="/home/sun/paint/lunwen/version3.0/",filename="lunwen_fig8_v3.0_late_cross_prect_pentad.pdf",date=26)
+    #data_resolve.integration_result()
+    ## 读取文件
+    #file  =  xr.open_dataset(data_resolve.end_path + data_resolve.file_name)
+#
+    #paint_pic_cross(somali=file.climate.data[0],bob=file.climate.data[1],prect=file.climate.data[2],path_out="/home/sun/paint/lunwen/version4.0/",filename="lunwen_fig8_v4.0_climate_cross_prect_pentad.pdf",date=25)
+    #paint_pic_cross(somali=file.early.data[0],bob=file.early.data[1],prect=file.early.data[2],path_out="/home/sun/paint/lunwen/version4.0/",filename="lunwen_fig8_v4.0_early_cross_prect_pentad.pdf",date=21)
+    #paint_pic_cross(somali=file.late.data[0],bob=file.late.data[1],prect=file.late.data[2],path_out="/home/sun/paint/lunwen/version4.0/",filename="lunwen_fig8_v4.0_late_cross_prect_pentad.pdf",date=26)
     
+    data_resolve.save_and_read_geo_force_ncfile()
     paint_geo_force()
     model_index  =  data_resolve.model_cross_index()
 
-    paint_cross_model(con_cross=model_index[2],noid_cross=model_index[3],con_prect=model_index[0],noid_prect=model_index[1],path_out="/home/sun/paint/lunwen/version3.0/",filename="lunwen_fig8e_v3.0_model_cross_prect_pentad.pdf",date1=15,date2=32)
+    paint_cross_model(con_cross=model_index[2],noid_cross=model_index[3],con_prect=model_index[0],noid_prect=model_index[1],path_out="/home/sun/paint/lunwen/version4.0/",filename="lunwen_fig10_v4.0_model_cross_prect_pentad.pdf",date1=10,date2=35)
 
 
 
