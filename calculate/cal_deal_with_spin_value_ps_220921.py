@@ -296,11 +296,12 @@ def joint_maritime():
 
 def main():
     import numpy as np
+    
     control  =  np.array(joint_control())
     indian   =  np.array(joint_indian())
     inch     =  np.array(joint_inch())
     global1m =  np.array(joint_global1m())
-    maritime =  np.array(joint_maritime)
+    maritime =  np.array(joint_maritime())
 
     spinup   =  np.array([control,indian,inch,global1m,maritime])
 

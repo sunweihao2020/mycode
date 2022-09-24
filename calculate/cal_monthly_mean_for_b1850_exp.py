@@ -9,7 +9,7 @@ import numpy as np
 import time
 
 month_dates  =  np.array([31,28,31,30,31,30,31,31,30,31,30,31])
-exp_files    =  ["b1850_control_climate_atmosphere.nc","b1850_indian_climate_atmosphere.nc","b1850_inch_climate_atmosphere.nc","b1850_maritime_climate_atmosphere.nc"]
+exp_files    =  ["b1850_control_climate_atmosphere.nc","b1850_indian_climate_atmosphere3.nc","b1850_inch_climate_atmosphere.nc","b1850_maritime_climate_atmosphere.nc"]
 exp_names    =  ["control","indian","inch","maritime"]
 
 def cal_monthly_average(input_file,exp_name):
@@ -63,7 +63,7 @@ def cal_monthly_average(input_file,exp_name):
     for vvvv in vars:
         out_set[vvvv].attrs  =  f0[vvvv].attrs
     
-    out_set.attrs["description"]  =  "Generated in 2022-9-13. This file based on daily climate variables, is monthly average"
+    out_set.attrs["description"]  =  "Generated in 2022-9-21. This file based on daily climate variables, is monthly average"
     ## ------------------------------------------------
 
     #  ----------      to ncfile     ------------------
