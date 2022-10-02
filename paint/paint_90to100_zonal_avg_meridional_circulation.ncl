@@ -2,7 +2,7 @@
 ;本代码绘制90-100E平均的经向-垂直环流场
 
 begin
-f0   = addfile("/home/sun/data/monsoon_onset/composite_zonal_average.nc","r")
+f0   = addfile("/home/sun/data/model_data/climate/b1850_control_atmospheric_monthly_average.nc","r")
 
 
 avg_v      =  f0->avg_v
