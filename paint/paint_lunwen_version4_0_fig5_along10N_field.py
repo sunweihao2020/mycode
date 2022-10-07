@@ -81,7 +81,7 @@ def paint_pic(lon,level,vwind,uwind,omega,topo_lon,topo):
             q  =  ax.quiver(lon[::4], level[::2], uwind[number_date.date[j],::2,::4], omega[number_date.date[j],::2,::4], 
                             angles='uv',# regrid_shape这个参数越小，是两门就越稀疏
                             scale_units='xy', scale=1.1,        # scale是参考矢量，所以取得越大画出来的箭头就越短
-                            units='xy', width=2.2,
+                            units='xy', width=3,
                             color='k',zorder=2)
 
             # 添加地形
@@ -96,17 +96,8 @@ def paint_pic(lon,level,vwind,uwind,omega,topo_lon,topo):
 
 
             # 加日期
-            if number_date.dates[j]<0:
-                add_text(ax=ax,string="D"+str(number_date.dates[j]),location=(0.87,0.92),fontsize=30)
-            elif number_date.dates[j]>0:
-                 add_text(ax=ax,string="D+"+str(number_date.dates[j]),location=(0.87,0.92),fontsize=30)
-            else:
-                 add_text(ax=ax,string="D"+str(number_date.dates[j]),location=(0.87,0.92),fontsize=30)
-            # 加序号
-            add_text(ax=ax,string="("+number_date.number[j]+")",location=(0.015,0.92),fontsize=30)
-
-            ax.set_title("D"+str(number_date.dates[j]),loc='right',fontsize=25)
-            ax.set_title("("+number_date.number[j]+")",loc='right',fontsize=25)
+            ax.set_title("D"+str(number_date.dates[j]),loc='right',fontsize=27.5)
+            ax.set_title("("+number_date.number[j]+")",loc='left',fontsize=27.5)
 
             j+=1
 
@@ -117,18 +108,18 @@ def paint_pic(lon,level,vwind,uwind,omega,topo_lon,topo):
     cbar_ax = fig.add_axes([0.2, 0.05, 0.6, 0.03]) 
     cb  =  fig.colorbar(im2, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=20)
-    save_fig(path_out="/home/sun/paint/lunwen/version3.0/",file_out="lunwen_fig5_v3.0_along10N_field.pdf")
+    save_fig(path_out="/home/sun/paint/lunwen/version4.0/",file_out="lunwen_fig5_v4.0_along10N_field.pdf")
 
 def main():
     # 读取范围
     lon_slice  =  slice(45,120)
     lat_slice  =  slice(10,15)
-    lev_slice  =  slice(1000,100)
+    lev_slice  =  slice(1000,00)
 
     # 读取数据
     path  =  "/home/sun/qomo-data/"
     f1  =  xr.open_dataset(path+"composite3.nc").sel(lat=lat_slice,lon=lon_slice,level=lev_slice)
-    f3  =  xr.open_dataset("/home/sun/data/gebco/bathymetric.nc").sel(lat=lat_slice,lon=lon_slice)
+    f3  =  xr.open_dataset("/home/sun/data/topography/bathymetric.nc").sel(lat=lat_slice,lon=lon_slice)
 
     # 计算经向平均
     uwind  =  np.nanmean(f1.uwind,axis=2)

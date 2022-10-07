@@ -94,8 +94,9 @@ res@tmYROn                  =    False
 res@xyLineThicknessF        =    3.5
 res@xyDashPattern           =    0
 res@xyMarkLineMode          =    "MarkLines"
-res@xyMarkers               =    (/6,6,6,7,7,7/)
-res@xyLineColors            =    (/"red","blue","black","red","blue","black"/)
+res@xyMarkerColors          =    (/"maroon4","maroon4","maroon4","green4","green4","green4"/)
+res@xyMarkers               =    (/7,7,7,16,16,16/)
+res@xyLineColors            =    (/"red","blue","ivory3","red","blue","ivory3"/)
 
 res@lgPerimOn               =    False  
 
@@ -148,8 +149,8 @@ lgres@lgLineColors          = (/"blue"/)
 lgres@lgLabelFontColor      = (/"blue"/)
 gsn_legend_ndc(wks,1,(/"   latent  heating"/),0.53,0.86,lgres)
 
-lgres@lgLineColors          = (/"black"/)
-lgres@lgLabelFontColor      = (/"black"/)
+lgres@lgLineColors          = (/"ivory3"/)
+lgres@lgLabelFontColor      = (/"ivory3"/)
 gsn_legend_ndc(wks,1,(/"   total   heating"/),0.53,0.82,lgres)
 end
 

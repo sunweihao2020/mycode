@@ -23,7 +23,7 @@ def cal_zonal_average(lon_slice,time_slice):
     ##--------------------------------------
 
     #  ---------files-----------------------
-    f0    =    xr.open_dataset(path + "b1850_indian_climate_atmosphere3.nc").sel(lon=lon_slice).isel(time=time_slice)
+    f0    =    xr.open_dataset(path + "b1850_control_atmosphere.nc").sel(lon=lon_slice).isel(time=time_slice)
 
     # use variables: vwind omega T turbulence moist physics
     vwind     =    np.nanmean(f0.V,axis=3)
@@ -52,7 +52,7 @@ def cal_gradient_meridional(vars):
     ##-----------------------------------------
 
     # ----------------- get disx disy location ---------------------
-    f0                   =    xr.open_dataset(path + "b1850_indian_climate_atmosphere3.nc")
+    f0                   =    xr.open_dataset(path + "b1850_control_atmosphere.nc")
     disy,disx,location   =    cal_xydistance(f0.lat,f0.lon)
 
     # ------------------ calculate gradient ------------------------
@@ -93,7 +93,7 @@ def paint_meridional_circulation():
     ## -------------------------------------------------------------
 
     # -------------- reference -------------------------------------
-    f0        =  xr.open_dataset(path + "b1850_indian_climate_atmosphere3.nc")
+    f0        =  xr.open_dataset(path + "b1850_control_atmosphere.nc")
 
     # -------------- variables -------------------------------------
     var_list  =  cal_zonal_average(lon_slice=slice(90,100),time_slice=[120,131,140])
@@ -138,7 +138,7 @@ def paint_meridional_circulation():
 
     # ------------     paint    ----------------------------------
     ## set figure
-    fig1 = plt.figure(figsize=(30, 8))
+    fig1 = plt.figure(figsize=(30, 18))
     spec1 = fig1.add_gridspec(nrows=1, ncols=3)
 
     ## set cmap
@@ -166,7 +166,7 @@ def paint_meridional_circulation():
             # plot contourf picture
             ## temperature gradient
             im1 = ax.contourf(f0.lat.data, new_level, new_t[j]*1e5,levels=np.linspace(-2,2,11),extend='both',cmap=cmap)
-            im2 = ax.contour(f0.lat.data, new_level, new_t[j]*1e5,levels=[0],colors='gray',linewidths=4,linestyles='--')
+            im2 = ax.contour(f0.lat.data, new_level, new_t[j]*1e5,levels=[0],colors='red',linewidths=4.5,linestyles='--')
 
             # plot stream line
             ax2  =  ax.twinx()
@@ -179,23 +179,23 @@ def paint_meridional_circulation():
             ax.set_facecolor("black")
             
             # add date
-            ax.set_title("D" + str(dates[j]),loc='right',fontsize=25)
-            #ax.set_title(fig_num[j],loc='left',fontsize=25)
-            ax.set_title('(b)',loc='left',fontsize=25)
+            #ax.set_title("D" + str(dates[j]),loc='right',fontsize=25)
+            ##ax.set_title(fig_num[j],loc='left',fontsize=25)
+            #ax.set_title('(b)',loc='left',fontsize=25)
 
             j += 1
 
     ## set colorbar
-    #fig1.subplots_adjust(top=0.8) 
+    fig1.subplots_adjust(top=0.8) 
 #
-    #cbar_ax = fig1.add_axes([0.2, 0.05, 0.6, 0.03])  
-    #cb      = fig1.colorbar(im1, cax=cbar_ax, shrink=0.5, pad=0.2, orientation='horizontal') 
+    cbar_ax = fig1.add_axes([0.2, 0.05, 0.6, 0.03])  
+    cb      = fig1.colorbar(im1, cax=cbar_ax, shrink=0.5, pad=0.2, orientation='horizontal') 
 #
-    #cb.ax.tick_params(labelsize=25)
+    cb.ax.tick_params(labelsize=25)
 
 
     plt_path  =  "/home/sun/paint/circulation_based_on_composite_result/"
-    plt.savefig(plt_path+"b1850control_composite_meri_vert_circulation_90to100_temp_gradient_select_-6_-2_2.pdf", dpi=400)
+    plt.savefig(plt_path+"b1850control_composite_meri_vert_circulation_90to100_temp_gradient_select_-6_-2_2——colorbat.pdf", dpi=400)
 
     plt.show()
 

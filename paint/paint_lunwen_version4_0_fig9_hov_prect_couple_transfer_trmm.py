@@ -49,7 +49,7 @@ def lon_avg_prect(time_slice=slice(100,201),lat_slice=slice(10,20),lon_slice=sli
     nomarin_prect   =  xr.open_dataset(data_path + "b1850_inch_indian_atmosphere.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
 
     # trmm data
-    trmm_prect      =  xr.open_dataset("/home/sun/data/composite/trmm_prect_365_climate.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
+    trmm_prect      =  xr.open_dataset("/home/sun/data/composite/trmm_prect_365_climate.nc").sel(time=time_slice,lat = slice(12,20),lon = lon_slice)
 
     # calculate weight average
     avg_control_prect  =  (control_prect["PRECT"]*(np.cos(np.deg2rad(control_prect.lat.values)))[None, :, None]).sum(dim='lat')/np.sum(np.cos(np.deg2rad(control_prect.lat.values)))*86400*1000
@@ -61,35 +61,16 @@ def lon_avg_prect(time_slice=slice(100,201),lat_slice=slice(10,20),lon_slice=sli
 
     return avg_trmm_prect,(avg_control_prect,avg_noic_prect,avg_noid_prect,avg_nomarin_prect)
 
-def paint_trmm_hov(trmm,path_out,filename,time_slice=slice(100,201),lat_slice=slice(10,20),lon_slice=slice(65,130)):
+def paint_trmm_hov(trmm,path_out,filename,time_slice=slice(100,201),lat_slice=slice(12,20),lon_slice=slice(65,130)):
     '''本函数绘制trmm降水资料的hov图,带个小地图'''
     f0  =  xr.open_dataset("/home/sun/data/composite/trmm_prect_365_climate.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
     # Start figure
-    fig = plt.figure(figsize=(13, 15))
-    gs = gridspec.GridSpec(nrows=2, ncols=1, height_ratios=[2, 6], hspace=0.03)
+    fig = plt.figure(figsize=(10, 8))
 
+    ax2  = fig.subplots()
 
-    # Top plot for geographic reference (makes small map)
-    ax1 = fig.add_subplot(gs[0, 0], projection=ccrs.PlateCarree())
-    ax1.set_extent([65, 130, 10, 20], ccrs.PlateCarree())
-    # 设置y轴刻度
-    ax1.set_yticks([10, 20])
-    ax1.set_yticklabels([u'10\N{DEGREE SIGN}N', u'20\N{DEGREE SIGN}N'],fontsize=25)
-    # 设置x轴刻度
-    ax1.set_xticks(np.arange(70,131,20))
-    ax1.set_xticklabels(x_tick_labels,fontsize=25)
-    ax1.grid(linestyle='dotted', linewidth=2)
-
-    ax1.add_feature(cfeature.COASTLINE.with_scale('10m'))
-    ax1.add_feature(cfeature.LAKES.with_scale('50m'), color='black', linewidths=0.05)
-    ax1.add_feature(cfeature.RIVERS)
-    ax1.add_feature(cfeature.LAKES)
-    ax1.stock_img()
-
-    ax2 = fig.add_subplot(gs[1, 0])
-
-    cf   = ax2.contourf(f0.lon.values, f0.time.values, 0.95*trmm.data,clevs, cmap=newcmp, extend='both')
-    cs   = ax2.contour(f0.lon.values,  f0.time.values, 0.95*trmm.data,clevs, colors='k', linewidths=1)
+    cf   = ax2.contourf(f0.lon.values, f0.time.values, 0.9*trmm.data,clevs, cmap=newcmp, extend='both')
+    cs   = ax2.contour(f0.lon.values,  f0.time.values, 0.9*trmm.data,clevs, colors='k', linewidths=1)
 
 
     # 坐标设置
@@ -99,6 +80,9 @@ def paint_trmm_hov(trmm,path_out,filename,time_slice=slice(100,201),lat_slice=sl
     ax2.set_yticks(y_tick)
     ax2.set_yticklabels(y_label,fontsize=25)
 
+    ax2.set_title('(a)',loc='left',fontsize=25)
+    ax2.set_title('TRMM',loc='right',fontsize=25)
+
     save_fig(path_out=path_out,file_out=filename)
 
 def paint_model_hov(model,path_out,filename,time_slice=slice(100,201),lat_slice=slice(10,20),lon_slice=slice(65,130)):
@@ -107,7 +91,102 @@ def paint_model_hov(model,path_out,filename,time_slice=slice(100,201),lat_slice=
     f0              =  xr.open_dataset(data_path + "b1850_control_atmosphere.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
     # 设置画布
     proj    =  ccrs.PlateCarree()
-    fig1    =  plt.figure(figsize=(30,24))
+
+    # -------- plot control experiment -----------------
+    j = 0
+
+
+    fig1    =  plt.figure(figsize=(10, 8))
+
+    ax1     =  fig1.subplots()
+
+    # 坐标设置
+    ax1.set_xticks(np.arange(70,131,20))
+    ax1.set_xticklabels(x_tick_labels,fontsize=25)
+
+    ax1.set_yticks(y_tick)
+    ax1.set_yticklabels(y_label,fontsize=25)
+
+    ax1.set_title('(b)',loc='left',fontsize=25)
+    ax1.set_title('CTRL',loc='right',fontsize=25)
+
+    cf   = ax1.contourf(f0.lon.values, f0.time.values,model[j], clevs, cmap=newcmp, extend='both')
+    cs   = ax1.contour(f0.lon.values,  f0.time.values,model[j], clevs, colors='k', linewidths=1)
+
+    save_fig(path_out=path_out,file_out='lunwen_fig9_v4.0_b1850_modelcontrol_hov_prect.pdf')
+
+    j += 1
+    # -------- plot inch experiment -----------------
+
+
+    fig1    =  plt.figure(figsize=(10, 8))
+
+    ax1     =  fig1.subplots()
+
+    # 坐标设置
+    ax1.set_xticks(np.arange(70,131,20))
+    ax1.set_xticklabels(x_tick_labels,fontsize=25)
+
+    ax1.set_yticks(y_tick)
+    ax1.set_yticklabels(y_label,fontsize=25)
+
+    ax1.set_title('(d)',loc='left',fontsize=25)
+    ax1.set_title('No_Inch',loc='right',fontsize=25)
+
+    cf   = ax1.contourf(f0.lon.values, f0.time.values,model[j], clevs, cmap=newcmp, extend='both')
+    cs   = ax1.contour(f0.lon.values,  f0.time.values,model[j], clevs, colors='k', linewidths=1)
+
+    save_fig(path_out=path_out,file_out='lunwen_fig9_v4.0_b1850_modelinch_hov_prect.pdf')
+
+    j += 1
+    # -------- plot indian experiment -----------------
+
+    fig1    =  plt.figure()
+    fig1    =  plt.figure(figsize=(10, 8))
+
+    ax1     =  fig1.subplots()
+
+    # 坐标设置
+    ax1.set_xticks(np.arange(70,131,20))
+    ax1.set_xticklabels(x_tick_labels,fontsize=25)
+
+    ax1.set_yticks(y_tick)
+    ax1.set_yticklabels(y_label,fontsize=25)
+
+    ax1.set_title('(c)',loc='left',fontsize=25)
+    ax1.set_title('No_Indian',loc='right',fontsize=25)
+
+    cf   = ax1.contourf(f0.lon.values, f0.time.values,model[j], clevs, cmap=newcmp, extend='both')
+    cs   = ax1.contour(f0.lon.values,  f0.time.values,model[j], clevs, colors='k', linewidths=1)
+
+    save_fig(path_out=path_out,file_out='lunwen_fig9_v4.0_b1850_modelindian_hov_prect.pdf')
+
+    j += 1
+    # -------- plot inch indian experiment -----------------
+
+
+    fig1    =  plt.figure(figsize=(10, 8))
+
+    ax1     =  fig1.subplots()
+
+    # 坐标设置
+    ax1.set_xticks(np.arange(70,131,20))
+    ax1.set_xticklabels(x_tick_labels,fontsize=25)
+
+    ax1.set_yticks(y_tick)
+    ax1.set_yticklabels(y_label,fontsize=25)
+
+    ax1.set_title('(e)',loc='left',fontsize=25)
+    ax1.set_title('No_Inch_Indian',loc='right',fontsize=25)
+
+    cf   = ax1.contourf(f0.lon.values, f0.time.values,model[j], clevs, cmap=newcmp, extend='both')
+    cs   = ax1.contour(f0.lon.values,  f0.time.values,model[j], clevs, colors='k', linewidths=1)
+
+    save_fig(path_out=path_out,file_out='lunwen_fig9_v4.0_b1850_modelinchindian_hov_prect.pdf')
+
+    j += 1
+
+    fig1    =  plt.figure(figsize=(30, 16))
     spec1   =  fig1.add_gridspec(nrows=2,ncols=2)
 
     j = 0

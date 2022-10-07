@@ -1,5 +1,6 @@
 '''
-This code paint January and July meridional circulation in the BOB region
+2022-10-4
+This code paint January and July meridional temperature max line in the BOB region
 To depict the characteristic of the Hadley cell
 
 data is from MERRA-2
@@ -32,77 +33,40 @@ def paint_jan_jul_tem_stream():
     v    =  np.nanmean(f0.V.data,axis=3)
 
     # set figure and axs
-    fig  =  plt.figure(figsize=(30,8))
-    spec =  fig.add_gridspec(nrows=1, ncols=3)
-
-    # set colormap
-    cmap =  cmr.holly
+    fig  =  plt.figure(figsize=(12,8))
+    ax   =  fig.subplots()
 
     # deal with data for paint
     tem_y,v,w  =  deal_data_for_paint(tem=tem,w=w,v=v,old_level=f0.lev.data,lat=f0.lat.data,lon=f0.lon.data)
     w *= -500  # scale the w
     new_level  =  np.linspace(1000,100,37)
 
-    j = 0
+    j    =  0
 
-    # select month
+    # set tick and tick label
+    xtick  =  np.linspace(-10,40,6,dtype=int)
+    ytick  =  np.linspace(1000,200,5,dtype=int)
+
+    xtick_label  =  generate_xlabel(xtick)
+
+    ax.set_xticks(xtick)
+    ax.set_yticks(ytick)
+    ax.set_xticklabels(xtick_label)
+
+    # set axis tick attribute
+    ax.tick_params(axis='both', labelsize = 22.5)
+
+    # set axis limit
+    ax.set_xlim((-10,40))
+
+    # plot temperature gradient contourf
     month       =  [0,3,6]
-    month_name  =  ["Jan","Apr","Jul"]
-    fig_num     =  ['(a)','(b)','(c)']
+    im0  =  ax.contour(f0.lat.data, new_level, tem_y[month[j]]*1e5,[0],colors='blue',linestyles='--',linewidths=3) ; j += 1
+    im1  =  ax.contour(f0.lat.data, new_level, tem_y[month[j]]*1e5,[0],colors='black',linestyles='--',linewidths=3) ; j += 1
+    im2  =  ax.contour(f0.lat.data, new_level, tem_y[month[j]]*1e5,[0],colors='red',linestyles='--',linewidths=3) ; j += 1
 
-    for row in range(1):
-        for col in range(3):
-            ax  =  fig.add_subplot(spec[row,col])
-
-            # set tick and tick label
-            xtick  =  np.linspace(-10,40,6,dtype=int)
-            ytick  =  np.linspace(1000,200,5,dtype=int)
-
-            xtick_label  =  generate_xlabel(xtick)
-
-            ax.set_xticks(xtick)
-            ax.set_yticks(ytick)
-            ax.set_xticklabels(xtick_label)
-
-            # set axis tick attribute
-            ax.tick_params(axis='both', labelsize = 22.5)
-
-            # plot temperature gradient contourf
-            im  =  ax.contourf(f0.lat.data, new_level, tem_y[month[j]]*1e5,np.linspace(-2,2,11),cmap=cmap,extend='both')
-
-            # plot zeros line
-            cr  =  ax.contour(f0.lat.data, new_level, tem_y[month[j]]*1e5,[0],colors='red',linestyles='--',linewidths=4.5)
-
-            # set range
-            ax.set_xlim((-10, 40))
-
-            # set axis label
-            #ax.set_xlabel("Latitude", fontsize=18)
-
-            # invert y axis
-            ax.invert_yaxis()
-
-            # give nan value black color
-            plt.gca().set_facecolor("black")
-
-            # add streamline to picture
-            ax2  =  ax.twinx()
-            ax2.streamplot(f0.lat.data, new_level[::-1], v[month[j], ::-1], w[month[j], ::-1], color='k', linewidth=2.5,
-                           density=[3,2.5], arrowsize=2.75, arrowstyle='->')
-            ax2.set_yticks([])
-
-            # add month name
-            ax.set_title(month_name[j],loc='right',fontsize=25)
-            ax.set_title(fig_num[j],loc='left',fontsize=25)
-
-            j += 1
-
-    #fig.subplots_adjust(top=0.)
-    #cbar_ax = fig.add_axes([0.2, 0.03, 0.6, 0.02])
-    #cb = fig.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
-    #cb.ax.tick_params(labelsize=16)
-
-    plt.savefig("/home/sun/paint/monthly_meri_vertical_tem_90to100E/Jan_and_Jul_temperature_gradient_streamline_MERRA2.pdf",dpi=500)
+    ax.invert_yaxis()
+    plt.savefig("/home/sun/paint/lunwen/version4.0/Jan_and_Jul_temperature_max_line_MERRA2.pdf",dpi=500)
     plt.show()
 
 
