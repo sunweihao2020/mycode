@@ -56,7 +56,8 @@ def paint_pic(extent,f2_lon,f2_lat,sh,f1_lon,f1_lat,vorticity,u,v):
             # 等值线
             im1  =  ax.contourf(f2_lon,f2_lat,-1*sh[number_date.date[j]]/86400,np.linspace(10,24,15),cmap=newcmp,alpha=1,extend='both')
             im2  =  ax.contour(f1_lon,f1_lat,1e6*(vorticity[number_date.date[j],:]),np.linspace(-10,10,6),colors='#4040ff',linewidths=2)
-            ax.clabel(im2, np.linspace(-10,10,6).astype(int), inline=True, fontsize=18)
+            im3  =  ax.contour(f1_lon,f1_lat,1e6*(vorticity[number_date.date[j],:]),[0],colors='#3636ff',linewidths=4)
+            #ax.clabel(im2, np.linspace(-10,10,6).astype(int), inline=True, fontsize=18)
 
             # 海岸线
             ax.coastlines(resolution='110m',lw=2)
@@ -71,13 +72,14 @@ def paint_pic(extent,f2_lon,f2_lat,sh,f1_lon,f1_lat,vorticity,u,v):
 
             # 加日期
             if number_date.dates[j]<0:
-                add_text(ax=ax,string="D"+str(number_date.dates[j]),location=(0.87,0.91),fontsize=30)
+                ax.set_title("D"+str(number_date.dates[j]),loc='right',fontsize=27.5)
             elif number_date.dates[j]>0:
-                 add_text(ax=ax,string="D+"+str(number_date.dates[j]),location=(0.87,0.91),fontsize=30)
+                ax.set_title("D+"+str(number_date.dates[j]),loc='right',fontsize=27.5)
             else:
-                 add_text(ax=ax,string="D"+str(number_date.dates[j]),location=(0.87,0.91),fontsize=30)
+                ax.set_title("D"+str(number_date.dates[j]),loc='right',fontsize=27.5)
             # 加序号
-            add_text(ax=ax,string="("+number_date.number[j]+")",location=(0.015,0.91),fontsize=30)
+
+            ax.set_title("("+number_date.number[j]+")",loc='left',fontsize=27.5)
 
             # 加矢量图图例
             add_vector_legend(ax=ax,q=q)
@@ -89,7 +91,7 @@ def paint_pic(extent,f2_lon,f2_lat,sh,f1_lon,f1_lat,vorticity,u,v):
     cb  =  fig1.colorbar(im1, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=20)
 
-    save_fig(path_out="/home/sun/paint/lunwen/version3.0/",file_out="lunwen_fig6_v3.0_sshf_vorticity_2mwind.pdf")
+    save_fig(path_out="/home/sun/paint/lunwen/version5.0/",file_out="lunwen_fig6_v3.0_sshf_vorticity_2mwind.pdf")
 
 
 def cal_vorticity(time,lat,lon,u,v):

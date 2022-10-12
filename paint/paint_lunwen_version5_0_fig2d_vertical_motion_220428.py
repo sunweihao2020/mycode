@@ -47,7 +47,7 @@ f4   =   xr.open_dataset(path+"composite-div_vor.nc").sel(lat=slice(10,15),lon=l
 div  =   np.nanmean(np.nanmean(f4.div[0:30],axis=0),axis=1)
 
 # 计算地形
-f5   =   xr.open_dataset("/home/sun/data/gebco/bathymetric.nc").sel(lat=slice(10,15),lon=lon_slice)
+f5   =   xr.open_dataset("/home/sun/data/topography/bathymetric.nc").sel(lat=slice(10,15),lon=lon_slice)
 dixing  =  f5.elevation.data
 dixing[dixing <= 0]  =  0
 topo    =  np.average(dixing,axis=0)
@@ -96,4 +96,4 @@ ax2.set_yticklabels([])
 ax2.set_yticks([])
 
 
-plt.savefig("/home/sun/paint/lunwen/version3.0/lunwen_v3.0_fig2d_div_theta_vector.pdf",dpi=350)
+plt.savefig("/home/sun/paint/lunwen/version5.0/lunwen_v5.0_fig2d_div_theta_vector.pdf",dpi=350)

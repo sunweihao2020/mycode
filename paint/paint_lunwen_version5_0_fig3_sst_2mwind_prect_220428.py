@@ -67,14 +67,14 @@ def paint_pic(extent,sst_lon,sst_lat,wind_lon,wind_lat,prect_lat,prect,sst,U2M,V
 
             # 加日期
             if dates[j]<0:
-                ax.set_title("D"+str(dates[j]),location='right',fontsize=27.5)
+                ax.set_title("D"+str(dates[j]),loc='right',fontsize=27.5)
             elif dates[j]>0:
-                ax.set_title("D+"+str(dates[j]),location='right',fontsize=27.5)
+                ax.set_title("D+"+str(dates[j]),loc='right',fontsize=27.5)
             else:
-                ax.set_title("D"+str(dates[j]),location='right',fontsize=27.5)
+                ax.set_title("D"+str(dates[j]),loc='right',fontsize=27.5)
             
             # 加图序号
-            ax.set_title("("+number[j]+")",location='left',fontsize=27.5)
+            ax.set_title("("+number[j]+")",loc='left',fontsize=27.5)
         
             j += 1
 
@@ -86,7 +86,7 @@ def paint_pic(extent,sst_lon,sst_lat,wind_lon,wind_lat,prect_lat,prect,sst,U2M,V
 
     # 保存图片
     #plt.tight_layout()
-    save_fig(path_out="/home/sun/paint/lunwen/version4.0/",file_out="lunwen_fig3_v4.0_prect_sst_2mwind.pdf")
+    save_fig(path_out="/home/sun/paint/lunwen/version5.0/",file_out="lunwen_fig3_v4.0_prect_sst_2mwind.pdf")
 
 def main():
     # 划定空间范围
