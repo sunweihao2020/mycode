@@ -43,7 +43,7 @@ def lon_avg_prect(time_slice=slice(100,201),lat_slice=slice(10,20),lon_slice=sli
     '''本函数对数据进行处理'''
     # model result
     data_path       =  '/home/sun/data/model_data/climate/'
-    control_prect   =  xr.open_dataset(data_path + "b1850_control_atmosphere.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
+    control_prect   =  xr.open_dataset(data_path + "b1850_control_climate_atmosphere.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
     noic_prect      =  xr.open_dataset(data_path + "b1850_inch_climate_atmosphere.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
     noid_prect      =  xr.open_dataset(data_path + "b1850_indian_climate_atmosphere3.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
     nomarin_prect   =  xr.open_dataset(data_path + "b1850_inch_indian_atmosphere.nc").sel(time=time_slice,lat = lat_slice,lon = lon_slice)
