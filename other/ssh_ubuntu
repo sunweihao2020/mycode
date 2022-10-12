@@ -1,0 +1,12 @@
+#!/usr/bin/expect
+set user sun
+set password 19970130SWh
+set host 192.168.50.132
+set port 22
+set timeout 30
+
+spawn ssh -$port $user@$host
+expect "*assword:*"
+send "$password\r"
+interact
+expect eof
