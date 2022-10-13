@@ -39,9 +39,7 @@ def paint_model_apr_925(extent):
     # streamline
     print(f0.U)
 
-    q   =   ax.streamplot(f0.lon, f0.lat, f0.U.data[3], f0.V.data[3],linewidth=3, color = 'k',density=[1, 1.15], arrowsize=2.75, arrowstyle='->')
-
-    q   =   ax.streamplot(f0.lon, f0.lat, f0.U.data[125], f0.V.data[125],linewidth=3, color = 'k',density=[1, 1.15], arrowsize=2.75, arrowstyle='->')
+    q   =   ax.streamplot(f0.lon, f0.lat, f0.U.data[4], f0.V.data[4],linewidth=3, color = 'k',density=[1, 1.15], arrowsize=2.75, arrowstyle='->')
 
 
     save_fig(path_out="/home/sun/paint/lunwen/assessment/",file_out="b1850_control_apr_925_wind.pdf")
@@ -56,17 +54,18 @@ def paint_jja_850_precip_wind(extent,lon_slice,lat_slice):
     f1  =  xr.open_dataset(merra_climate)
     f2  =  xr.open_dataset(b1850_control)
 
+    ## 1. The resolution between MERRA-2 and CESM2 is different, I need intepolate it to keep them consistent
+    merra_les  =  interp_merra_to_cam(f1)
     
+def interp_merra_to_cam(f):
+    print(f)
 
 def main():
     lonmin,lonmax,latmin,latmax  =  30,120,-10,40
     extent     =  [lonmin,lonmax,latmin,latmax]
 
 
-    paint_model_apr_925(extent=extent)
-
-
-
+    paint_jja_850_precip_wind(1,2,3)
 
 if __name__ == "__main__":
     main()
