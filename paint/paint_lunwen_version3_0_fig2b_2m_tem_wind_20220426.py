@@ -20,7 +20,7 @@ def colormap_from_list_color(list):
     # 本函数读取颜色列表然后制作出来colormap
     return LinearSegmentedColormap.from_list('chaos',list)
 
-def add_vector_legend(ax,q,location=(0.825, 0),length=0.175,wide=0.2,fc='white',ec='k',lw=0.5,order=1,quiver_x=0.915,quiver_y=0.125,speed=5,fontsize=18):
+def add_vector_legend(ax,q,location=(0.825, 0),length=0.175,wide=0.2,fc='white',ec='k',lw=0.5,order=1,quiver_x=0.915,quiver_y=0.125,speed=10,fontsize=18):
     '''
     句柄 矢量 位置 图例框长宽 表面颜色 边框颜色  参考箭头的位置 参考箭头大小 参考label字体大小
     '''
