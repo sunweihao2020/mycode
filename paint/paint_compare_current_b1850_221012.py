@@ -110,7 +110,11 @@ def paint_jja_850_precip_wind(extent,lon_slice,lat_slice):
     extent  =  [lonmin, lonmax, latmin, latmax]
 
     proj = ccrs.PlateCarree()
+<<<<<<< HEAD
     fig1 = plt.figure(figsize=(24, 10))
+=======
+    fig1 = plt.figure(figsize=(24, 14))
+>>>>>>> 4519734 (add new)
     spec1 = fig1.add_gridspec(nrows=1, ncols=2)
 
     j  =  1  # current climate
@@ -119,7 +123,11 @@ def paint_jja_850_precip_wind(extent,lon_slice,lat_slice):
 
     # set tick
     set_cartopy_tick(ax=ax, extent=extent, xticks=np.linspace(50, 150, 6, dtype=int),
+<<<<<<< HEAD
                      yticks=np.linspace(0, 50, 6, dtype=int), nx=1, ny=1, labelsize=25)
+=======
+                     yticks=np.linspace(-10, 50, 7, dtype=int), nx=1, ny=1, labelsize=22)
+>>>>>>> 4519734 (add new)
 
     # equator line
     ax.plot([40, 140], [0, 0], 'k--')
@@ -144,17 +152,29 @@ def paint_jja_850_precip_wind(extent,lon_slice,lat_slice):
     fun1.add_vector_legend(ax=ax,q=q)
 
     # coastline
+<<<<<<< HEAD
     ax.coastlines(resolution='10m',lw=1)
 
     # title
     ax.set_title('MERRA-2',loc='left',fontsize=25)
     ax.set_title('850 hPa',loc='right',fontsize=25)
+=======
+    ax.coastlines(resolution='110m',lw=1)
+
+    # title
+    ax.set_title('MERRA-2',loc='left',fontsize=22)
+    ax.set_title('JJA-850 hPa',loc='right',fontsize=22)
+>>>>>>> 4519734 (add new)
 
     ax = fig1.add_subplot(spec1[0, 1], projection=proj)
 
     # set tick
     set_cartopy_tick(ax=ax, extent=extent, xticks=np.linspace(50, 150, 6, dtype=int),
+<<<<<<< HEAD
                      yticks=np.linspace(0, 50, 6, dtype=int), nx=1, ny=1, labelsize=25)
+=======
+                     yticks=np.linspace(-10, 50, 7, dtype=int), nx=1, ny=1, labelsize=25)
+>>>>>>> 4519734 (add new)
 
     # equator line
     ax.plot([40, 140], [0, 0], 'k--')
@@ -177,11 +197,25 @@ def paint_jja_850_precip_wind(extent,lon_slice,lat_slice):
     fun1.add_vector_legend(ax=ax, q=q)
 
     # coastline
+<<<<<<< HEAD
     ax.coastlines(resolution='10m', lw=1)
 
     # title
     ax.set_title('CESM2', loc='left', fontsize=25)
     ax.set_title('850 hPa', loc='right', fontsize=25)
+=======
+    ax.coastlines(resolution='110m', lw=1)
+
+    # title
+    ax.set_title('CESM2', loc='left', fontsize=22)
+    ax.set_title('JJA-850 hPa', loc='right', fontsize=22)
+
+    # 加colorbar
+    fig1.subplots_adjust(top=0.8)
+    cbar_ax = fig1.add_axes([0.2, 0.05, 0.6, 0.03])
+    cb = fig1.colorbar(im2, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
+    cb.ax.tick_params(labelsize=20)
+>>>>>>> 4519734 (add new)
 
 
 
@@ -195,7 +229,11 @@ def paint_jja_850_precip_wind(extent,lon_slice,lat_slice):
     #newcmp.set_under('white')
     #newcmp.set_over('brown')
 
+<<<<<<< HEAD
     fig1    =  plt.figure(figsize=(12,10))
+=======
+    fig1    =  plt.figure(figsize=(12,12))
+>>>>>>> 4519734 (add new)
 
     ax      =  fig1.add_subplot(111,projection=proj)
 
@@ -208,7 +246,11 @@ def paint_jja_850_precip_wind(extent,lon_slice,lat_slice):
 
     # contourf for jet , bigger than 10 is painted
     clev = np.linspace(10, 20, 5)
+<<<<<<< HEAD
     im2 = ax.contourf(f0.lon, f0.lat, np.average(f0.speed_merra2.data[5:8], axis=0) - np.average(f0.speed_model.data[5:8], axis=0), levels=np.linspace(-10,10,11), cmap=newcmp,
+=======
+    im2 = ax.contourf(f0.lon, f0.lat, np.average(f0.speed_merra2.data[5:8], axis=0) - np.average(f0.speed_model.data[5:8], axis=0), levels=np.linspace(-6,6,7), cmap='coolwarm',
+>>>>>>> 4519734 (add new)
                       extend='both',
                       zorder=0)
 
@@ -224,11 +266,25 @@ def paint_jja_850_precip_wind(extent,lon_slice,lat_slice):
     fun1.add_vector_legend(ax=ax, q=q,speed=5)
 
     # coastline
+<<<<<<< HEAD
     ax.coastlines(resolution='10m', lw=1)
 
     # title
     ax.set_title('MERRA2 - CESM2', loc='left', fontsize=25)
     ax.set_title('850 hPa', loc='right', fontsize=25)
+=======
+    ax.coastlines(resolution='110m', lw=1)
+
+    # title
+    ax.set_title('MERRA2 - CESM2', loc='left', fontsize=25)
+    ax.set_title('JJA-850 hPa', loc='right', fontsize=25)
+
+    # 加colorbar
+    fig1.subplots_adjust(top=0.8)
+    cbar_ax = fig1.add_axes([0.2, 0.05, 0.6, 0.03])
+    cb = fig1.colorbar(im2, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
+    cb.ax.tick_params(labelsize=20)
+>>>>>>> 4519734 (add new)
 
     save_fig(path_out="/home/sun/paint/b1850_exp/assessment/", file_out="compare_current_b1850_850wind_difference.pdf")
 
