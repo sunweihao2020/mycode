@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<config_batch version="2.1">
+<batch_system type="slurm" MACH="oneapi">
+  <batch_submit>sbatch</batch_submit>
+  <submit_args>
+    <arg flag="--time" name="$JOB_WALLCLOCK_TIME"/>
+    <arg flag="-p" name="$JOB_QUEUE"/>
+  </submit_args>
+  <directives>
+    <directive> --exclude=c[2624-2627,2630-2637,2640-2647]</directive>
+  </directives>
+  <queues>
+    <queue walltimemax="12:00:00" nodemin="1" nodemax="2712">i01203share</queue>
+  </queues>
+</batch_system>
+
+
+</config_batch>
