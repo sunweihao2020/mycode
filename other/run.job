@@ -1,0 +1,26 @@
+#!/bin/bash
+#SBATCH -J all-test
+#SBATCH -p cpu_parallel
+#SBATCH -N 32
+#SBATCH -n 1024
+#SBATCH --ntasks-per-node=32
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=200G
+#SBATCH -o casesm.o%j
+#SBATCH -e casesm.e%j
+#SBATCH --exclusive
+#SBATCH --no-requeue
+#SBATCH -t 100-00:00
+
+module purge
+module load compiler/intel/2017.5.239
+module load mpi/intelmpi/2017.4.239
+module load mathlib/hdf5/intel/1.8.20
+module load mathlib/szip/intel/2.1.1
+module load mathlib/netcdf/intel/4.4.1
+
+ulimit -s unlimited
+
+scontrol show hostname > nd
+NP=$SLURM_NPROCS
+mpirun -np $NP -machinefile nd ./ccsm.exe
