@@ -62,6 +62,9 @@ time_series  =  np.append(time_series,  s7)
 
 print(time_series.shape[0] / 12)
 time_series_con  =  time_series
+time_series_con_year  =  np.zeros((150), dtype=np.float64)
+for i in range(150):
+    time_series_con_year[i]  =  np.average(time_series_con[i*12 : (i*12+12)])
 ############################################################
 
 # ------------ series 2 Indian -----------------------
@@ -88,6 +91,9 @@ time_series  =  np.append(time_series, s4[:12*12])
 time_series  =  np.append(time_series, s4[30*12:])
 
 time_series_indian  =  time_series
+time_series_indian_year  =  np.zeros((150), dtype=np.float64)
+for i in range(150):
+    time_series_indian_year[i]  =  np.average(time_series_indian[i*12 : (i*12+12)])
 ##############################################################
 
 # ------------- series 3 Inco-china -----------------
@@ -112,6 +118,9 @@ with open(path0  +  'in_ts_s1.npy', 'rb') as f:
 time_series  =  np.append(time_series, s4[:-12*4])
 
 time_series_inch  =  time_series
+time_series_inch_year  =  np.zeros((150), dtype=np.float64)
+for i in range(150):
+    time_series_inch_year[i]  =  np.average(time_series_inch[i*12 : (i*12+12)])
 ##############################################################
 
 # ------------ series 4 Inch Indian -----------------
@@ -122,6 +131,9 @@ with open(path0  +  'inch_indian_150.npy',  'rb') as f:
 
 time_series  =  np.append(time_series, ss)
 time_series_inch_indian  =  time_series
+time_series_inch_indian_year  =  np.zeros((150), dtype=np.float64)
+for i in range(150):
+    time_series_inch_indian_year[i]  =  np.average(time_series_inch_indian[i*12 : (i*12+12)])
 ##############################################################
 
 #-------------------- 2. paint ------------------------------
@@ -137,11 +149,12 @@ spec1   =  fig1.add_gridspec(nrows=4,ncols=1)
 ax = fig1.add_subplot(spec1[0,0])
 
 # plot setting
-ax.set_xticks([0, 25*12, 50*12, 75*12, 100*12, 125*12, 150*12])
+ax.set_xticks([0, 25, 50, 75, 100, 125, 150])
 ax.set_xticklabels(["1","25","50","75","100","125","150"], fontsize = 22.5)
 
-ax.set_yticks(np.linspace(275,282,8, dtype=int))
-ax.set_yticklabels(np.linspace(275,282,8, dtype=int), fontsize=22.5)
+ax.set_ylim(277,280)
+ax.set_yticks(np.linspace(277,280,4, dtype=int))
+ax.set_yticklabels(np.linspace(277,280,4, dtype=int), fontsize=22.5)
 
 # title
 ax.set_xlabel("Year", fontsize=20)
@@ -150,17 +163,18 @@ ax.set_ylabel("Global-Mean TS", fontsize=20)
 ax.set_title("CTRL", fontsize=20, loc='right')
 ax.set_title("(a)", fontsize=20, loc='left')
 
-ax.plot(time_series_con)
+ax.plot(time_series_con_year)
 
 # 2.2 paint indian spinup
 ax = fig1.add_subplot(spec1[1,0])
 
 # plot setting
-ax.set_xticks([0, 25*12, 50*12, 75*12, 100*12, 125*12, 150*12])
+ax.set_xticks([0, 25, 50, 75, 100, 125, 150])
 ax.set_xticklabels(["1","25","50","75","100","125","150"], fontsize = 22.5)
 
-ax.set_yticks(np.linspace(275,282,8, dtype=int))
-ax.set_yticklabels(np.linspace(275,282,8, dtype=int), fontsize=22.5)
+ax.set_ylim(277,280)
+ax.set_yticks(np.linspace(277,280,4, dtype=int))
+ax.set_yticklabels(np.linspace(277,280,4, dtype=int), fontsize=22.5)
 
 # title
 ax.set_xlabel("Year", fontsize=20)
@@ -169,17 +183,18 @@ ax.set_ylabel("Global-Mean TS", fontsize=20)
 ax.set_title("No_Indian", fontsize=20, loc='right')
 ax.set_title("(b)", fontsize=20, loc='left')
 
-ax.plot(time_series_indian)
+ax.plot(time_series_indian_year)
 
 # 2.3 paint inch spinup
 ax = fig1.add_subplot(spec1[2,0])
 
 # plot setting
-ax.set_xticks([0, 25*12, 50*12, 75*12, 100*12, 125*12, 150*12])
+ax.set_xticks([0, 25, 50, 75, 100, 125, 150])
 ax.set_xticklabels(["1","25","50","75","100","125","150"], fontsize = 22.5)
 
-ax.set_yticks(np.linspace(275,282,8, dtype=int))
-ax.set_yticklabels(np.linspace(275,282,8, dtype=int), fontsize=22.5)
+ax.set_ylim(277,280)
+ax.set_yticks(np.linspace(277,280,4, dtype=int))
+ax.set_yticklabels(np.linspace(277,280,4, dtype=int), fontsize=22.5)
 
 # title
 ax.set_xlabel("Year", fontsize=20)
@@ -188,17 +203,18 @@ ax.set_ylabel("Global-Mean TS", fontsize=20)
 ax.set_title("No_Inch", fontsize=20, loc='right')
 ax.set_title("(c)", fontsize=20, loc='left')
 
-ax.plot(time_series_inch)
+ax.plot(time_series_inch_year)
 
 # 2.4 paint indian-inch spinup
 ax = fig1.add_subplot(spec1[3,0])
 
 # plot setting
-ax.set_xticks([0, 25*12, 50*12, 75*12, 100*12, 125*12, 150*12])
+ax.set_xticks([0, 25, 50, 75, 100, 125, 150])
 ax.set_xticklabels(["1","25","50","75","100","125","150"], fontsize = 22.5)
 
-ax.set_yticks(np.linspace(275,282,8, dtype=int))
-ax.set_yticklabels(np.linspace(275,282,8, dtype=int), fontsize=22.5)
+ax.set_ylim(277.5,279.5)
+ax.set_yticks(np.linspace(277.5,279.5,5, dtype=int))
+ax.set_yticklabels(np.linspace(277.5,279.5,5, dtype=int), fontsize=22.5)
 
 # title
 ax.set_xlabel("Year", fontsize=20)
@@ -207,6 +223,6 @@ ax.set_ylabel("Global-Mean TS", fontsize=20)
 ax.set_title("No_Inch_Indian", fontsize=20, loc='right')
 ax.set_title("(d)", fontsize=20, loc='left')
 
-ax.plot(time_series_inch_indian)
+ax.plot(time_series_inch_indian_year)
 
-plt.savefig('/home/sun/paint/lunwen/version6.0/lunwen_extra_spinup_v6.0_150ts.pdf', dpi=450)
+plt.savefig('/home/sun/paint/lunwen/version6.0/lunwen_extra_spinup_v6.0_150ts_yearly.pdf', dpi=450)

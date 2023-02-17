@@ -160,7 +160,7 @@ def paint_meridional_circulation():
 
     ## set cmap
     #cmap = cmr.holly                  # CMasher
-    cmap = cmr.prinsenvlag                 # CMasher
+    cmap = cmr.prinsenvlag_r                 # CMasher
     #cmap = plt.get_cmap('cmr.rainforest')
 
     j = 0
@@ -188,12 +188,12 @@ def paint_meridional_circulation():
 
             # plot stream line
             ax2  =  ax.twinx()
-            ax2.streamplot(f0.lat.data, new_level[::-1], new_v[j,::-1], new_w[j,::-1], color='k',linewidth=2.25,density=2.5,arrowsize=2.25, arrowstyle='->')
+            ax2.streamplot(f0.lat.data, new_level[::-1], new_v[j,::-1], new_w[j,::-1], color='k',linewidth=2.,density=2.35,arrowsize=2.25, arrowstyle='->')
             ax2.set_yticklabels([])
 
             ## diabatic heating
             im3 = ax.contour(f1.lat.data, new_level, new_s[j],levels=[2, 4, 6, 8],colors='red',linewidths=2.5)
-            ax.clabel(im3,fontsize=20)
+            ax.clabel(im3,fontsize=22)
 #
             #im4 = ax.contour(f1.lat.data, new_level, new_l[j],levels=np.linspace(4,12,5),colors='blue',linewidths=3)
             #ax.clabel(im4,fontsize=30)
