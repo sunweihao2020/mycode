@@ -100,7 +100,7 @@ def add_legend():
 
 
 def main():
-    year,day = open_onsetdate("/home/sun/data/onsetdate.json")
+    year,day = open_onsetdate("/home/sun/qomo-data/onsetdate.json")
     colorlist = select_anomaly_year(day)
 
     fig,axs  =  plt.subplots(figsize=(13,10))

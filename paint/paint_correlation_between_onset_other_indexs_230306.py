@@ -25,7 +25,7 @@ def calculate_threshold_correlation(n=63):
     '''
     return 0.20912, 0.24803, 0.32227 # 0.1, 0.05, 0.01
 
-corr_file = xr.open_dataset('/home/sun/data/ERA5_data_monsoon_onset/index/correlation/many_index_corr_with_onset_dates.nc')
+corr_file = xr.open_dataset('/home/sun/data/ERA5_data_monsoon_onset/index/correlation/onset_dates_with_OLR.nc')
 
 def paint_12month_correlation(correlation, extent, lon, lat, title):
     '''This function plot the correlation among the 12 months'''
@@ -44,7 +44,7 @@ def paint_12month_correlation(correlation, extent, lon, lat, title):
             ax = fig1.add_subplot(spec1[row,col],projection=proj)
 
             # Set the tick and tick-label
-            set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(30,330,6,dtype=int),yticks=np.linspace(60,-60,5,dtype=int),nx=1,ny=1,labelsize=22)
+            set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(30,330,6,dtype=int),yticks=np.linspace(60,-60,13,dtype=int),nx=1,ny=1,labelsize=17)
 
             # contourf
             #im = ax.contourf(lon, lat, correlation[j], [0, 0.24, 1], hatches=[None, '.'])
@@ -55,6 +55,9 @@ def paint_12month_correlation(correlation, extent, lon, lat, title):
             #im = ax.contourf(lon, lat, data, np.linspace(-0.8, 0.8, 9), cmap=cmap,)
             im2 = ax.contourf(lons, lat, data, [-1, -0.248, 0, 0.248, 1], hatches=['.', None, None, '.'], colors="none", transform=ccrs.PlateCarree())
             ax.coastlines()
+
+            ax.plot([30,330],[0,0],'k--',transform = ccrs.PlateCarree())
+            ax.plot([30,330],[10,10],'r--',transform = ccrs.PlateCarree())
 
             ax.set_title('Month '+str(j+1), loc='left', fontsize=27.5)
             ax.set_title(title, loc='right', fontsize=27.5)
@@ -73,10 +76,7 @@ def paint_12month_correlation(correlation, extent, lon, lat, title):
 def main():
     lonmin,lonmax,latmin,latmax  =  30,250,60,-60
     extent     =  [lonmin,lonmax,latmin,latmax]
-    paint_12month_correlation(corr_file['onset_with_v'], extent, corr_file['lon'], corr_file['lat'], "V (95%)")
-    paint_12month_correlation(corr_file['onset_with_sst'], extent, corr_file['lon'], corr_file['lat'], "SST (95%)")
-    paint_12month_correlation(corr_file['onset_with_u'], extent, corr_file['lon'], corr_file['lat'], "U (95%)")
-    paint_12month_correlation(corr_file['onset_with_sp'], extent, corr_file['lon'], corr_file['lat'], "SP (95%)")
+    paint_12month_correlation(corr_file['onset_with_olr'], extent, corr_file['lon'], corr_file['lat'], "OLR (95%)")
 
 if __name__ == '__main__':
     main()

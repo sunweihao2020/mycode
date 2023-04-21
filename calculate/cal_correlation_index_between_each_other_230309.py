@@ -35,15 +35,11 @@ def main():
     ls_diff2  = calculate_monthly_mean(file['ls_diff2'].data)
     bob_cef   = calculate_monthly_mean(file['bob_cef'].data)
 
-    onset_date = xr.open_dataset('/home/sun/data/onset_day_data/ERA5_onset_day_include_early_late_years.nc')
-    dates     = onset_date['onset_day'].data
+    file2 = xr.open_dataset('/home/sun/data/other_data/maritime_avg_OLR/OLR_maritime_area_average_monthly.nc').sel(year=slice(1959, 2021))
     
     # 2. Calculate pearson relation
     # This is a 6 * 4 = 24 matrix
     indexs = [s_bob_sst, io_sst, u_bob, ls_diff1, ls_diff2, bob_cef]
-    indexs_name = ['Southern_BOB_SST', 'Tropical_Indian_Ocean_SST', 'Southern_BOB_U', 'Land-Sea_diff_1', 'Land-Sea_diff_2', 'BOB_CEF']
-    #print(stats.pearsonr(dates - np.average(dates), (s_bob_sst[:,2] - np.average(s_bob_sst[:, 2]))))
-    corr_matrix = np.zeros((4, 6))
 
     i = 1
     mar_u_and_cef = stats.pearsonr(indexs[2][:, i] - np.average(indexs[2][:, i]), indexs[5][:, i] - np.average(indexs[5][:, i]))
@@ -60,15 +56,41 @@ def main():
     may_u_and_tc = stats.pearsonr(indexs[2][:, i] - np.average(indexs[2][:, i]), indexs[4][:, i] - np.average(indexs[4][:, i]))
     may_tc_and_cef = stats.pearsonr(indexs[5][:, i] - np.average(indexs[5][:, i]), indexs[4][:, i] - np.average(indexs[4][:, i]))
 
-    print(mar_u_and_cef)
-    print(mar_u_and_tc)
-    print(mar_tc_and_cef)
-    print(apr_u_and_cef)
-    print(apr_u_and_tc)
-    print(apr_tc_and_cef)
-    print(may_u_and_cef)
-    print(may_u_and_tc)
-    print(may_tc_and_cef)
+    # OLR
+    i = 1
+    mar_u_and_olr   = stats.pearsonr(indexs[2][:, i] - np.average(indexs[2][:, i]), file2['ttr_avg_mon'][:, i+1] - np.average(file2['ttr_avg_mon'][:, i+1]))
+    mar_tc_and_olr  = stats.pearsonr(indexs[4][:, i] - np.average(indexs[4][:, i]), file2['ttr_avg_mon'][:, i+1] - np.average(file2['ttr_avg_mon'][:, i+1]))
+    mar_cef_and_olr = stats.pearsonr(indexs[5][:, i] - np.average(indexs[5][:, i]), file2['ttr_avg_mon'][:, i+1] - np.average(file2['ttr_avg_mon'][:, i+1]))
+
+    i = 2
+    apr_u_and_olr   = stats.pearsonr(indexs[2][:, i] - np.average(indexs[2][:, i]), file2['ttr_avg_mon'][:, i+1] - np.average(file2['ttr_avg_mon'][:, i+1]))
+    apr_tc_and_olr  = stats.pearsonr(indexs[4][:, i] - np.average(indexs[4][:, i]), file2['ttr_avg_mon'][:, i+1] - np.average(file2['ttr_avg_mon'][:, i+1]))
+    apr_cef_and_olr = stats.pearsonr(indexs[5][:, i] - np.average(indexs[5][:, i]), file2['ttr_avg_mon'][:, i+1] - np.average(file2['ttr_avg_mon'][:, i+1]))
+
+    i = 3
+    may_u_and_olr   = stats.pearsonr(indexs[2][:, i] - np.average(indexs[2][:, i]), file2['ttr_avg_mon'][:, i+1] - np.average(file2['ttr_avg_mon'][:, i+1]))
+    may_tc_and_olr  = stats.pearsonr(indexs[4][:, i] - np.average(indexs[4][:, i]), file2['ttr_avg_mon'][:, i+1] - np.average(file2['ttr_avg_mon'][:, i+1]))
+    may_cef_and_olr = stats.pearsonr(indexs[5][:, i] - np.average(indexs[5][:, i]), file2['ttr_avg_mon'][:, i+1] - np.average(file2['ttr_avg_mon'][:, i+1]))
+
+    #print(mar_u_and_cef)
+    #print(mar_u_and_tc)
+    #print(mar_tc_and_cef)
+    #print(apr_u_and_cef)
+    #print(apr_u_and_tc)
+    #print(apr_tc_and_cef)
+    #print(may_u_and_cef)
+    #print(may_u_and_tc)
+    #print(may_tc_and_cef)
+
+    print(mar_u_and_olr)
+    print(mar_tc_and_olr)
+    print(mar_cef_and_olr)
+    print(apr_u_and_olr)
+    print(apr_tc_and_olr)
+    print(apr_cef_and_olr)
+    print(may_u_and_olr)
+    print(may_tc_and_olr)
+    print(may_cef_and_olr)
 
 
 if __name__ == '__main__':
