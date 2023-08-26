@@ -313,3 +313,12 @@ def create_ncl_colormap(file,bin):
     cmap = LinearSegmentedColormap.from_list('newcmp', rgb, N=bin)
 
     return cmap
+
+def cal_partial_correlation(rab, rac, rbc):
+    '''
+    This function calculate the partial correlation, c is variable to be removed
+    '''
+    top = rab - (rac * rab)
+    bottom = math.sqrt((1-rac**2) * (1-rbc**2))
+
+    return top/bottom
